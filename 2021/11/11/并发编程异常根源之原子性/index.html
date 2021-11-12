@@ -20,23 +20,30 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta property="og:type" content="website">
-<meta property="og:title" content="云大的博客">
-<meta property="og:url" content="http://example.com/index.html">
+<meta name="description" content="问题溯源汇编分析有一段自加的代码，如下所示： 123456int main()&amp;#123;    int x;    x &#x3D; 0;    x++;    return 0;&amp;#125;  使用GCC加-S编译之后生成的X86汇编如下所示： 12345678main:    push    rbp    mov     rbp, rsp    mov     DWORD PTR [rbp-4], 0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发编程异常根源之原子性">
+<meta property="og:url" content="http://example.com/2021/11/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%BC%82%E5%B8%B8%E6%A0%B9%E6%BA%90%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%80%A7/index.html">
 <meta property="og:site_name" content="云大的博客">
+<meta property="og:description" content="问题溯源汇编分析有一段自加的代码，如下所示： 123456int main()&amp;#123;    int x;    x &#x3D; 0;    x++;    return 0;&amp;#125;  使用GCC加-S编译之后生成的X86汇编如下所示： 12345678main:    push    rbp    mov     rbp, rsp    mov     DWORD PTR [rbp-4], 0">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/12/IDJjmV.jpg">
+<meta property="article:published_time" content="2021-11-11T23:51:16.000Z">
+<meta property="article:modified_time" content="2021-11-12T08:58:03.735Z">
 <meta property="article:author" content="XinShuoWang">
+<meta property="article:tag" content="多线程">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/11/12/IDJjmV.jpg">
 
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2021/11/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%BC%82%E5%B8%B8%E6%A0%B9%E6%BA%90%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%80%A7/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2021/11/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%BC%82%E5%B8%B8%E6%A0%B9%E6%BA%90%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%80%A7/","path":"2021/11/11/并发编程异常根源之原子性/","title":"并发编程异常根源之原子性"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>云大的博客</title>
+<title>并发编程异常根源之原子性 | 云大的博客</title>
   
 
 
@@ -90,7 +97,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -103,6 +110,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%BA%AF%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">问题溯源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">汇编分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%87%E6%8D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">线程切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">根源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8CAS%E6%8C%87%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">使用CAS指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#X86%E4%B8%AD%E4%BD%BF%E7%94%A8LOCK%E6%8C%87%E4%BB%A4"><span class="nav-number">2.2.</span> <span class="nav-text">X86中使用LOCK指令</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -150,16 +158,17 @@
 </noscript>
 
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%BC%82%E5%B8%B8%E6%A0%B9%E6%BA%90%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -172,9 +181,9 @@
       <meta itemprop="name" content="云大的博客">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%BC%82%E5%B8%B8%E6%A0%B9%E6%BA%90%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%80%A7/" class="post-title-link" itemprop="url">并发编程异常根源之原子性</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          并发编程异常根源之原子性
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -198,7 +207,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="问题溯源"><a href="#问题溯源" class="headerlink" title="问题溯源"></a>问题溯源</h1><h2 id="汇编分析"><a href="#汇编分析" class="headerlink" title="汇编分析"></a>汇编分析</h2><p>有一段自加的代码，如下所示：</p>
+        <h1 id="问题溯源"><a href="#问题溯源" class="headerlink" title="问题溯源"></a>问题溯源</h1><h2 id="汇编分析"><a href="#汇编分析" class="headerlink" title="汇编分析"></a>汇编分析</h2><p>有一段自加的代码，如下所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int main()&#123;</span><br><span class="line">    int x;</span><br><span class="line">    x = 0;</span><br><span class="line">    x++;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>使用GCC加<code>-S</code>编译之后生成的X86汇编如下所示：</p>
@@ -232,7 +241,6 @@
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="使用CAS指令"><a href="#使用CAS指令" class="headerlink" title="使用CAS指令"></a>使用CAS指令</h2><p> Compare And Swap对应X86汇编<code>CMPXCHG</code>，CAS是原子操作的一种，可用于在多线程编程中实现不被打断的数据交换操作，从而避免多线程同时改写某一数据时由于执行顺序不确定性以及中断的不可预知性产生的数据不一致问题。 该操作通过将内存中的值与指定数据进行比较，当数值一样时将内存中的数据替换为新的值。</p>
 <h2 id="X86中使用LOCK指令"><a href="#X86中使用LOCK指令" class="headerlink" title="X86中使用LOCK指令"></a>X86中使用LOCK指令</h2><p>LOCK指令前缀会设置处理器的LOCK#信号（译注：这个信号会使总线锁定，阻止其他处理器接管总线访问内存），直到使用LOCK前缀的指令执行结束，这会使这条指令的执行变为原子操作。在多处理器环境下，设置LOCK#信号能保证某个处理器对共享内存的独占使用。<br>从P6处理器家族开始，如果使用了LOCK指令前缀的指令要访问的目的地址的内容已经缓存在了cache中，那么LOCK#信号一般就不会被设置，但是当前处理器的cache会被锁定，然后缓存一致性（cache coherency ）机制会自动确保操作的原子性。</p>
 
-      
     </div>
 
     
@@ -240,256 +248,25 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag"># 多线程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/10/DNS%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%A6%99%E7%94%A8/" rel="prev" title="DNS的原理及妙用">
+                  <i class="fa fa-chevron-left"></i> DNS的原理及妙用
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/10/DNS%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%A6%99%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="XinShuoWang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="云大的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/10/DNS%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%A6%99%E7%94%A8/" class="post-title-link" itemprop="url">DNS的原理及妙用</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-10 10:04:20 / 修改时间：10:43:52" itemprop="dateCreated datePublished" datetime="2021-11-10T10:04:20+08:00">2021-11-10</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="DNS原理"><a href="#DNS原理" class="headerlink" title="DNS原理"></a>DNS原理</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>DNS （Domain Name System 的缩写）的作用非常简单，就是根据域名查出IP地址，可以理解为一个巨大的KV存储系统，每次请求的时候使用UDP协议向DNS服务器的53端口发起请求，DNS服务器返回{A记录、CNAME记录、NS记录}。</p>
-<p>有的时候改一下host文件就可以访问Google的原因就是因为DNS上<code>www.google.com</code>的记录被故意设置错了，所以无法访问，改完host文件之后就可以访问是因为计算机会直接从本地host文件中解析<code>www.google.com</code>而不用去远程DNS服务器拿，但是改host方式对于“封IP”的拦截方法就无效了。</p>
-<h2 id="查询方式"><a href="#查询方式" class="headerlink" title="查询方式"></a>查询方式</h2><p>有递归查询方式和迭代查询方式两种，有时也可两者混用<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/IUCmNt"><img src="https://z3.ax1x.com/2021/11/10/IUCmNt.png" alt="IUCmNt.png"></a></p>
-<h2 id="记录类型"><a href="#记录类型" class="headerlink" title="记录类型"></a>记录类型</h2><p>常用的记录有以下4种类型</p>
-<ul>
-<li>A：地址记录（Address），返回域名指向的IP地址。</li>
-<li>NS：域名服务器记录（Name Server），返回保存下一级域名信息的服务器地址。该记录只能设置为域名，不能设置为IP地址。</li>
-<li>MX：邮件记录（Mail eXchange），返回接收电子邮件的服务器地址。</li>
-<li>CNAME：规范名称记录（Canonical Name），返回另一个域名，即当前查询的域名是另一个域名的跳转。</li>
-</ul>
-<h2 id="DIG工具"><a href="#DIG工具" class="headerlink" title="DIG工具"></a>DIG工具</h2><p>指定DNS服务器的查询：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dig @114.114.114.114 math.stackexchange.com</span><br></pre></td></tr></table></figure>
-<p>一般指定DNS服务器的查询要么返回下一级DNS服务器的域名，要么直接返回IP地址<br>如果直接去根服务器查询一个记录时，会返回顶级域名服务器的域名，然后再去请求顶级域名服务器，顶级域名服务器会返回权限域名服务器的地址，以此类推，直到返回一个IP地址</p>
-<p>不指定DNS服务器的查询：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dig math.stackexchange.com</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IUC3uQ"><img src="https://z3.ax1x.com/2021/11/10/IUC3uQ.png" alt="IUC3uQ.png"></a></p>
-<h1 id="用DNS实现CDN"><a href="#用DNS实现CDN" class="headerlink" title="用DNS实现CDN"></a>用DNS实现CDN</h1><h2 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h2><p>CDN全称Content Distribute Network，即内容分发网络，CDN通过广泛的网络节点分布，提供快速、稳定、安全、可编程的全球内容分发加速服务，支持将网站、音视频、下载等内容分发至接近用户的节点，使用户可就近取得所需内容，提高用户访问的响应速度和成功率。</p>
-<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>CDN的实现主要依赖于DNS的CNAME记录</p>
-<p>假设需要对static.github.com的域名下的所有内容进行CDN</p>
-<ol>
-<li>首先需要在CDN服务商那里填写想要加速的域名，在这里就是static.github.com</li>
-<li>CDN服务商会分配给你一个CNAME记录，例如是：cdn-100000000.aliyun.com</li>
-<li>把这个CNAME记录cdn-100000000.aliyun.com填写到static.github.com的解析里即可</li>
-</ol>
-<h2 id="加速流程"><a href="#加速流程" class="headerlink" title="加速流程"></a>加速流程</h2><p>这里默认全部使用迭代的请求方式</p>
-<ol>
-<li>浏览器请求<code>staic.github.com</code></li>
-<li>DNS服务器返回CNAME类型的记录：<code>cdn-100000000.aliyun.com</code></li>
-<li>浏览器再去请求<code>cdn-100000000.aliyun.com</code></li>
-<li>DNS返回NS类型记录：<code>cdn_name_server.cdn.aliyun.com</code>，意思是“我不知道你这个记录指向哪个IP，但是我知道有一个DNS服务器知道，你去问他吧”</li>
-<li>浏览器再去向<code>cdn_name_server.cdn.aliyun.com</code>DNS服务器请求<code>cdn-100000000.aliyun.com</code></li>
-<li>CDN专属的DNS服务器会根据用户IP、优先级、可用性等策略选择一个加速节点的IP返回给浏览器，假设是<code>45.56.23.98</code>这个节点一般距离用户较近且不跨运营商</li>
-<li>浏览器去请求这个IP，加速节点如果有要请求的内容就直接返回，如果没有就需要去源站取回再返回给用户</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/06/ConfigureHexo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="XinShuoWang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="云大的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/06/ConfigureHexo/" class="post-title-link" itemprop="url">ConfigureHexo</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-06 17:04:07 / 修改时间：17:11:09" itemprop="dateCreated datePublished" datetime="2021-11-06T17:04:07+08:00">2021-11-06</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="配置NodeJS"><a href="#配置NodeJS" class="headerlink" title="配置NodeJS"></a>配置NodeJS</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://nodejs.org/dist/v16.13.0/node-v16.13.0-linux-x64.tar.xz</span><br><span class="line">tar xf node-v16.13.0-linux-x64.tar.xz</span><br></pre></td></tr></table></figure>
-
-<h1 id="安装Hexo以及附属插件"><a href="#安装Hexo以及附属插件" class="headerlink" title="安装Hexo以及附属插件"></a>安装Hexo以及附属插件</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 在全局安装</span><br><span class="line">sudo npm install -g hexo-cli</span><br><span class="line"></span><br><span class="line">// 进入网站根目录文件夹下安装</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/06/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="XinShuoWang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="云大的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/06/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-11-06 15:26:15" itemprop="dateCreated datePublished" datetime="2021-11-06T15:26:15+08:00">2021-11-06</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 
