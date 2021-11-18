@@ -20,13 +20,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="AP数据库的查询缓存优化 编译执行 向量化 缓存匹配 RDMA    BigFoot网络代理 epoll 线程池 sock5协议 多线程">
 <meta property="og:type" content="website">
 <meta property="og:title" content="About">
 <meta property="og:url" content="http://example.com/about/index.html">
 <meta property="og:site_name" content="云大的博客">
+<meta property="og:description" content="AP数据库的查询缓存优化 编译执行 向量化 缓存匹配 RDMA    BigFoot网络代理 epoll 线程池 sock5协议 多线程">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-11-18T11:28:34.000Z">
-<meta property="article:modified_time" content="2021-11-18T11:40:43.875Z">
+<meta property="article:modified_time" content="2021-11-18T13:22:41.458Z">
 <meta property="article:author" content="XinShuoWang">
 <meta name="twitter:card" content="summary">
 
@@ -103,7 +105,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -116,6 +118,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#AP%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">AP数据库的查询缓存优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BigFoot%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">BigFoot网络代理</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -184,8 +187,20 @@
       
       
       <div class="post-body">
-          <hr>
+          <h3 id="AP数据库的查询缓存优化"><a href="#AP数据库的查询缓存优化" class="headerlink" title="AP数据库的查询缓存优化"></a>AP数据库的查询缓存优化</h3><ul>
+<li>编译执行</li>
+<li>向量化</li>
+<li>缓存匹配</li>
+<li>RDMA</li>
+</ul>
+<hr>
 
+<h3 id="BigFoot网络代理"><a href="#BigFoot网络代理" class="headerlink" title="BigFoot网络代理"></a>BigFoot网络代理</h3><ul>
+<li>epoll</li>
+<li>线程池</li>
+<li>sock5协议</li>
+<li>多线程</li>
+</ul>
 <hr>
       </div>
       
