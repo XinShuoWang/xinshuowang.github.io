@@ -20,18 +20,20 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="用法原理">
+<meta name="description" content="用法12345678910111213141516171819202122232425262728293031323334353637class Actress &amp;#123;public:    Actress(int h, int w, int a):height(h),weight(w),age(a)&amp;#123;&amp;#125;;    virtual void desc() &amp;#123;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Virtual关键字">
 <meta property="og:url" content="http://example.com/2021/11/16/Virtual%E5%85%B3%E9%94%AE%E5%AD%97/index.html">
 <meta property="og:site_name" content="云大的博客">
-<meta property="og:description" content="用法原理">
+<meta property="og:description" content="用法12345678910111213141516171819202122232425262728293031323334353637class Actress &amp;#123;public:    Actress(int h, int w, int a):height(h),weight(w),age(a)&amp;#123;&amp;#125;;    virtual void desc() &amp;#123;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/18/ITLJw4.jpg">
 <meta property="article:published_time" content="2021-11-16T01:01:33.000Z">
-<meta property="article:modified_time" content="2021-11-16T09:02:39.275Z">
+<meta property="article:modified_time" content="2021-11-18T13:13:38.970Z">
 <meta property="article:author" content="XinShuoWang">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/11/18/ITLJw4.jpg">
 
 
 <link rel="canonical" href="http://example.com/2021/11/16/Virtual%E5%85%B3%E9%94%AE%E5%AD%97/">
@@ -200,10 +202,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-11-16 09:01:33 / 修改时间：17:02:39" itemprop="dateCreated datePublished" datetime="2021-11-16T09:01:33+08:00">2021-11-16</time>
+      <time title="创建时间：2021-11-16 09:01:33" itemprop="dateCreated datePublished" datetime="2021-11-16T09:01:33+08:00">2021-11-16</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-18 21:13:38" itemprop="dateModified" datetime="2021-11-18T21:13:38+08:00">2021-11-18</time>
+      </span>
 
   
 </div>
@@ -215,7 +223,17 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1>
+        <h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">class Actress &#123;</span><br><span class="line">public:</span><br><span class="line">    Actress(int h, int w, int a):height(h),weight(w),age(a)&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    virtual void desc() &#123;</span><br><span class="line">        printf(&quot;height:%d weight:%d age:%d\n&quot;, height, weight, age);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    virtual void name() &#123;</span><br><span class="line">        printf(&quot;I&#x27;m a actress&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int height; // 身高</span><br><span class="line">    int weight; // 体重</span><br><span class="line">    int age;    // 年龄（注意，这不是数据库，不必一定存储生日）</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Sensei: public Actress &#123;</span><br><span class="line">public:</span><br><span class="line">    Sensei(int h, int w, int a, const char* c):Actress(h, w, a)&#123;</span><br><span class="line">        snprintf(cup, sizeof(cup), &quot;%s&quot;, c);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    virtual void desc() &#123;</span><br><span class="line">        printf(&quot;height:%d weight:%d age:%d cup:%s\n&quot;, height, weight, age, cup);</span><br><span class="line">    &#125;</span><br><span class="line">    char cup[4];</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    Actress* p = new Sensei(175, 120, 24, &#x27;C&#x27;);</span><br><span class="line">    p-&gt;name()    // &quot;I&#x27;m a actress&quot;</span><br><span class="line">    p-&gt;desc();   // height:175 weight:120 age:24 cup:C</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><ol>
+<li>类数据成员与成员函数是分开的</li>
+<li>为什不把函数指针当做成员？You should’t pay for what you don’t need.</li>
+<li>类中放的是虚表指针，指向虚表地址</li>
+<li>继承的时候直接从父类那拿来虚表，如果子类重新定义了virtual修饰的函数，那么就去覆盖子类的对应虚表项</li>
+<li>为什么去掉virtual就去调用父类的函数了？静态绑定，在编译时就确定了要调用的函数地址（不会出问题，父类有的子类一定有）</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/ITLJw4"><img src="https://z3.ax1x.com/2021/11/18/ITLJw4.jpg" alt="ITLJw4.jpg"></a></p>
+
     </div>
 
     
