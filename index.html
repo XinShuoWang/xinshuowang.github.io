@@ -193,8 +193,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-11-24 16:06:25" itemprop="dateCreated datePublished" datetime="2021-11-24T16:06:25+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 16:06:25 / 修改时间：19:16:39" itemprop="dateCreated datePublished" datetime="2021-11-24T16:06:25+08:00">2021-11-24</time>
     </span>
 
   
@@ -207,7 +208,46 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          
+          <p>最近由于要优化一个比较老的数据库的Hash Join算法，所以在读一些相关的论文；关于论文的选择方面，在CMU 15-721这门课上有一栏是Hash Join相关的，所以我也就直接读这里面的论文了，省了不少挑选论文的时间。这篇论文是目的是探索Hash Function与Hash Scheme的不同组合在不同Load Factor、不同数据分布（密集分布（1-n）、稀疏分布（在1-2^63-1中随机选择n个）、网格分布（将64位数据划分为8个块，每个块只在1-14之间生成随机数））、不同数据集大小等7个方面的情况下的性能表现。<br>我这篇文章只是简单说一下里面提到的Hash Function与Hash Scheme，对于实验以及实验结果不做解释。<br>如果想对实验有进一步的了解可以阅读论文，论文最后给了一个决策建议，你可以根据自己的应用需求进行有取舍的选择。</p>
+<h1 id="作者介绍"><a href="#作者介绍" class="headerlink" title="作者介绍"></a>作者介绍</h1><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oi0v11"><img src="https://z3.ax1x.com/2021/11/24/oi0v11.jpg" alt="Jens Dittrich"></a><br>一作应该是Jens Dittrich的学生,Jens Dittrich现德国萨尔兰大学教授，曾就职于苏黎世联邦理工大学，曾获VLDB 2014最佳论文奖。这个教授的组应该是做数据库中的Hash Join相关方向的，我已经看到了好几篇他们发的VLDB。这个老师在Youtube也有相关的公开课，大部分是英文的，感兴趣的可以去搜索一下。</p>
+<h1 id="Hash函数"><a href="#Hash函数" class="headerlink" title="Hash函数"></a>Hash函数</h1><p>文中提到了4种Hash Function，分别是： </p>
+<ul>
+<li>Multiply-shift </li>
+<li>Multiply-add-shift </li>
+<li>Tabulation-Hashing </li>
+<li>MurMur hasing</li>
+</ul>
+<h2 id="Multiply-shift"><a href="#Multiply-shift" class="headerlink" title="Multiply-shift"></a>Multiply-shift</h2><p><code>h(x) = (x * z mod 2^w) div 2^(w-d)</code>，<code>w</code>是位宽，<code>x</code>是一个介于<code>0</code>到<code>2^w-1</code>之间的数字，<code>z</code>是一个介于<code>1</code>到<code>2^w-1</code>之间的奇数，hash table的大小是<code>2^d</code>。 优势： 1. mod操作不用关心，因为在现有计算机中x*z如果导致溢出，那么效果就是<code>mod 2^w 2</code>. 冲突概率是<code>1/(2^(d-1))</code></p>
+<h2 id="Multiply-add-shift"><a href="#Multiply-add-shift" class="headerlink" title="Multiply-add-shift"></a>Multiply-add-shift</h2><p><code>h(x) = ((x * a + b) mod 2^(2w)) div 2^(2w - d)</code>,其中<code>x</code>是一个<code>w</code>位的整数，<code>a</code>与<code>b</code>都是<code>2w</code>位的整数，hash table大小是<code>2^d</code> 当<code>x</code>是64位的时候，<code>a</code>与<code>b</code>需要为128位的数，这是很难实现的，所以我们仍然可以使用64位的计算。</p>
+<h2 id="Tabulation-Hashing"><a href="#Tabulation-Hashing" class="headerlink" title="Tabulation-Hashing"></a>Tabulation-Hashing</h2><p>步骤如下： 1. 把64位的数字按8位一组进行分组<code>&#123;c1, c2, ... c8&#125;</code> 2. 创建8个表格，每个表格有两列，第一列是<code>0-255</code>，第二列是随机生成的值<code>&#123;Ti[i]=random()%（2^64-1）&#125;</code> 3. <code>c1</code>是一个介于<code>0-255</code>之间的值，所以直接去<code>T1</code>表中拿到对应的随机值<code>&#123;x=T1[c1]&#125;</code> 4. 依次进行8次，将8个结果进行XOR即可 优势： 1. 表大小是16KB，可以放入L1缓存，所以会非常快。</p>
+<h2 id="MurMur-hasing"><a href="#MurMur-hasing" class="headerlink" title="MurMur hasing"></a>MurMur hasing</h2><p>示例代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">uint64_t murmur3_64_finalizer(uint64_t key) &#123;</span><br><span class="line">    key ˆ= key &gt;&gt; 33;</span><br><span class="line">    key *= 0xff51afd7ed558ccd;</span><br><span class="line">    key ˆ= key &gt;&gt; 33;</span><br><span class="line">    key *= 0xc4ceb9fe1a85ec53;</span><br><span class="line">    key ˆ= key &gt;&gt; 33;</span><br><span class="line">    return key;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Hash-Scheme"><a href="#Hash-Scheme" class="headerlink" title="Hash Scheme"></a>Hash Scheme</h1><p>Hash Scheme我理解就是基于线性表做的一系列操作从而把数据放进数据结构里，方便O（1）的查找。<br>文中提到了5种Hash Scheme，分别是： </p>
+<ul>
+<li>Linear Probing </li>
+<li>Quadratic Probing</li>
+<li>Chained Hashing </li>
+<li>Cuckoo Hashing </li>
+<li>Roobin Hood Hasing</li>
+</ul>
+<h2 id="Linear-Probing"><a href="#Linear-Probing" class="headerlink" title="Linear Probing"></a>Linear Probing</h2><p>线性探测(LP)是开放寻址中最简单的冲突处理方案。哈希函数的形式如下:<code>h(k, i) = (h_(k) + i) mod l</code>，其中<code>i</code>表示第<code>i</code>个探测位置，<code>h_(k)</code>是一个辅助哈希函数。它的工作原理如下:首先，尝试插入一个键值对<code>&lt;k, v&gt;</code>，键k在最优情况下会在<code>T[h(k，0)]</code>Slot中，如果在开放寻址哈希表t中<code>T[h(k，0)]</code>已经被另一个具有不同键的项占用，就要循环探测连续的槽<code>h(k，1)， h(k，2)， h(k，3)， ...，</code>直到<code>h(k,i)</code>是空的，我们就把<code>&lt;k,v&gt;</code>此Slot中，我们将<code>&lt;k, v&gt;</code>的位移d定义为i，将所有项上的位移之和定义为t的总位移。我们可以看到，总位移是线性探测性能的度量，因为在查找过程中，较高的总位移意味着比较长的探测序列。 LP的优势主要有以下两个： 1. 较低的实现复杂度。 2. 较好的Cache友好性 但是LP也存在一些问题：对删除的处理比较复杂，因为我们不能直接移除给定的数据项（如果直接移除将会把cluster截断，导致查询错误，cluster是探测序列中临近的被占用的Slot区域），一种处理方法就是使用TombStones，即“墓碑”。</p>
+<h2 id="Quadratic-Probing"><a href="#Quadratic-Probing" class="headerlink" title="Quadratic Probing"></a>Quadratic Probing</h2><p>Quadratic Probing（QP）是另一种比较流行的处理冲突的开放地址法，在QP中Hash Function是这样的<code>h(k,i)=(h_(k) + a * i + b * i ^2) mod l</code>，i与LP一样代表着探测轮次，l代表着Slot的大小，a与b都是一个常量。 如果表的容量l是2的幂，且a = b = 1/2，可以证明二次探查将在最坏情况中考虑表的每个Slot一次。也就是说，只要哈希表中有空槽，这个特殊版本的二次探测最终总会找到它们。 如果两个key在第一次就发生了hash冲突，那么之后每一次探测都会发生冲突。</p>
+<h2 id="Chained-Hashing"><a href="#Chained-Hashing" class="headerlink" title="Chained Hashing"></a>Chained Hashing</h2><p>Chained Hashing是一种非常简单的冲突处理方法，其中表T的每个Slot（实现时一般使用数组）是一个指向条目链表的指针。在插入时，数据被附加到与哈希函数h下的键k对应的列表中，即<code>T[h(k)]</code>下。在查找阶段,需要在<code>T[h(k)]</code>指向的链表中进行查找即可。Chained Hasing是一个简单的和健壮的方法,被广泛应用在实践中,例如,在当前STL的std::unordered_map或Java的java.util.HashMap的实现中都是这种方法。 与开放寻址方法相比，Chained Hashing对于整数键来说性能和内存占用通常都不太好。这主要有两个原因: 1. 链表所使用的指针会导致较高的内存开销（在64位系统中，一个指针占用8 Byte）。 2. 使用链表会导致Cache Miss(即使是对于只有一个元素且没有冲突的槽)。<br>Chained Hasing还有两种变种，分别是ChainedH8与ChainedH24，ChainedH24做的改进是原来每个Slot只存放指向链表的指针，现在每个Slot里面都可以存放3个数据，这将减少Cache Miss。</p>
+<h2 id="Cuckoo-Hashing"><a href="#Cuckoo-Hashing" class="headerlink" title="Cuckoo Hashing"></a>Cuckoo Hashing</h2><p>Cuckoo hasing是另一种开放寻址方案，在其最初(也是最简单的)版本中，其工作原理如下:有两个哈希表<code>T0,T1</code>，每一个都有自己的哈希函数<code>h0</code>和<code>h1</code>。每个插入的元素p都存储在<code>T0[h0(p)]</code>或<code>T1[h1(p)]</code>中，但从不同时存储。当在插入阶段的时候<code>T0[h0(p)]</code>或<code>T1[h1(p)</code>]都有数据，那么就随机挑选一个表中的对应位置上的数据进行踢出，再给这个被踢出的数据重新找一个位置进行插入，Cuckoo Haing有一个移动次数上限，如果达到了要更换Hash函数，对所有元素进行重新Hash。 Cuckoo Hashing的优势： 1. 最多只需要两次探测即可找到值。 2. 易于实现 3. 性能基本与LP、QP相当。</p>
+<h2 id="Robin-Hood-Hasing-On-LP"><a href="#Robin-Hood-Hasing-On-LP" class="headerlink" title="Robin Hood Hasing On LP"></a>Robin Hood Hasing On LP</h2><p>一般来说，Robin Hood的提出是基于这样的观察：交换cluster里面的KV对并不影响探测。 罗宾汉Hash，每个元素都附带上自己的distance信息，如果新元素的distance大于旧元素的distance，那么要给旧元素重新找位置，否则就继续往下探测、进行比较。</p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><ol>
+<li>不同Hash函数对整型、字符串型等的效果是怎样的？我觉得字符串可以看做是实验里的grid分布，因为带有一定的范围性（ASCII可见字符是有范围的）</li>
+<li>Mult是最佳的Hash函数，代价就是对于不同的数据分布方差可能比较明显。</li>
+<li>对于写一次读多次的场景来说，Robin Hood性能比较好，Roobin Hood Hashing通过牺牲1%-5%的峰值性能改变了LP的最坏性能。</li>
+<li>chained hash与cuckoo hash都不适合写较多的场景。</li>
+<li>总的来说，Array-of-Struct比Struct-of-Array要优秀，这里要解释一下什么是AOS，什么是SOA，AOS就是把一块内存初始化为一个结构体的数组，详见例1，SOA是把一块内存初始化为一个结构体，详见例2。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 例1</span><br><span class="line">typedef struct person&#123;</span><br><span class="line">    char[8] name;</span><br><span class="line">    char[1] sex;</span><br><span class="line">&#125; person;</span><br><span class="line"></span><br><span class="line">char* data = new char[4*1024];</span><br><span class="line">person* p = (person*)data;</span><br><span class="line">// 例2</span><br><span class="line">const int person_cnt = 100;</span><br><span class="line">typedef struct persons&#123;</span><br><span class="line">    char[8 * person_cnt] name;</span><br><span class="line">    char[1 * person_cnt] sex;</span><br><span class="line">&#125; persons;</span><br><span class="line"></span><br><span class="line">// 便利每一个人的姓名</span><br><span class="line">person.name[index * 8]</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://15721.courses.cs.cmu.edu/spring2018/papers/19-hashjoins/richter-vldb2015.pdf">A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing</a></li>
+<li><a target="_blank" rel="noopener" href="https://15721.courses.cs.cmu.edu/spring2020/schedule.html">CMU 15-721课程主页</a></li>
+</ul>
+
       
     </div>
 
@@ -256,8 +296,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-11-24 16:04:37" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:37+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 16:04:37 / 修改时间：19:18:04" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:37+08:00">2021-11-24</time>
     </span>
 
   
@@ -270,7 +311,44 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          
+          <p>Learned Index</p>
+<p>B-Tree其实也是一种模型：F(Key)= AccuratePosition<br>使用NN之后：F(Key) = PredictPosition，之后还需要在区间[PredictPosition - MinErr，PredictPosition - MaxErr]内寻找Key</p>
+<p>CDF：Cumulative Distribution Function，累计分布函数</p>
+<p>索引：[(k1,v1_pos),(k2,v2_pos),(k3,v3_pos),(k4,v4_pos),(k5,v5_pos),(k6,v6_pos)]，其中k1&lt;=k2&lt;=k3&lt;=k4&lt;=k5&lt;=k6，v1_pos&lt;=v2_pos&lt;=v3_pos&lt;=v4_pos&lt;=v5_pos&lt;=v6_pos<br>这时就可以看成一条单调递增曲线，如上图</p>
+<p>ModelId = (PredictionPostion / TotalRecords) * NumModelsThatLayer<br>上层采用NN，越到底层待拟合数据量越少，这时候就要采用Linea Regression来进行训练（效果好、参数少）</p>
+<p>RDMA KV<br>S-RKV</p>
+<p>在这种设计中CPU是瓶颈，只是相当于用RDMA重新实现了RPC而已，限制了扩展性</p>
+<p>C-RKV</p>
+<p>在这种设计中RDMA的遍历操作是瓶颈，复杂度O(logN)，所以一些人选择增加cache来提高性能，但是cache有这几方面缺点：<br>● 需要缓存层数比较多效果才比较好，需要在缓存大小与性能之间做trade-off<br>● 容易出现大量cache失效，因为有的叶子裂变或传导至root节点，从下图可以看到，缓存的越多导致的缓存失效就越多，从而引发的抖动就越大。<br>● 时延对比</p>
+<p>X-Store<br>● 对于GET、SCAN操作使用client-direct设计，对于UPDATE、INSERT、DELETE使用server-centric设计<br>● 客户端（Learned Cache）与服务端（B+Tree）采用不同的缓存结构，这样就可以利用不同缓存结构的优势<br>● 因为Learned Cache要求KV必须是单调增，但是实际的Value并不会真的是单调递增的，如下图所示：插入一个叶子的物理地址是0x30，这样就将之前的单调增状态打破了，所以需要处理这种情况，方法就是增加一个Translation Table（TT）来映射（本质就是一个Map，用来完成从Logical Leaf Number到Actual Leaf Number的映射）。</p>
+<p>Train</p>
+<ol>
+<li>拿整个KV的CDF曲线去训练，X就是Key，Y是KV对在整个系统中的次序（这个K在所有K中按从大到小排序是第几名），最终得到一个估计误差在[MinErr，MaxErr]范围内的模型TOP</li>
+<li>再遍历K，把每个K都送入TOP模型进行推理，得到K应该划分给哪一个sub-model去处理，每个sub-model就是Linear Regression模型，X是Key，Y就是KV对在整个系统中的次序（这个K在所有K中按从大到小排序是第几名）</li>
+</ol>
+<p>GET</p>
+<ol>
+<li>先用TOP模型去预测应该把这个K送给哪一个sub-model去推理</li>
+<li>根据上一步的结果选择sub-model，然后将K送入此sub-model再进行推理，得到pos，根据误差来计算pos的上下界</li>
+<li>然后使用doorbell batching技术一次性的把相关Leaf全都读到client端，然后在本地进行遍历寻找K是否匹配，如果匹配就可以根据对应关系得到V的地址，再使用一次RDMA Read就能拿到数据。</li>
+</ol>
+<p>为什么不直接拿V到本地？<br>理论来说，如果叶子存的是具体数据，那么一次 RDMA 就可以完全读回。这边 XSTORE 使用两次是为了节约 RDMA 读的 payload。<br>举例来说，如果使用一次 RDMA，则需要读取叶子里的所有数据加上 ，这样会读取过多的值 $(n sizeof(Key) + n sizeof(Value)其中n$ 是叶子节点最多的 item 数量），造成 RDMA bandwidth 的浪费。如果使用两次 RDMA，则总共需要读  数据，如果  的大小比  大很多（通常是这种情况），则会更加高效。</p>
+<p>怎么确定拿到的数据是正确的？</p>
+<p>● 会有fallback机制<br>    ○ 本地没有要查询K所在的Leaf的记录，产生fallback<br>    ○ 拿到的Leaf的incarnation与本地不对应，invalidate本地记录，产生fallback<br>● 在拿V的时候应该还会去拿incarnation，来对比数据是否发生变化</p>
+<p>GET时K不存在怎么办，SCAN时K不存在怎么办？<br>● GET时在第24行会返回不存在（TT的Entry是有效的、Leaf的incarnation也是对的，但是就是找不到K，所以返回NOT_FOUND）<br>    ○ 比如对于K=6来说，模型给出预测：[3，4]，可以cover住K=5和K=7的情况（cover：保证了单调性）<br>● 模型在局部和整体上必须是单调的。SCAN时会出现下面这种情况：每个模型都能正确的工作（模型内预测结果是单调的），但是模型间的预测结果不是单调的，所以会出现问题，可以增加一个数据点在边界来避免这种问题。<br>    ○ 对于K=10来说，给出预测：[6,7]，这时就不能确定K=10是不存在还是模型已经过时了，而且在SCAN的时候直接会导致13被忽略从而结果出错。</p>
+<p>UPDATE<br>不会影响KV的位置，所以可以算得上是static workloads</p>
+<p>position hint<br>会在本地先预测出要更新的V的位置，然后连同更新请求发送给server，然后server可以利用position hint减少查询次数</p>
+<p>INSERT DELETE<br>发生在服务端，所以和B+Tree的操作差不多，但是每次需要使incarnation自增从而使客户端意识到叶子结点发生了变化（分裂操作）</p>
+<p>retraining and invalidation</p>
+<p>● 从客户端来说，如果叶子节点没有发生分裂，查询可以正常进行（不存在就更新模型）<br>● 从客户端来说，如果叶子结点发生分裂<br>    ○ 不属于分裂影响到的节点：即使模型不更新也不会受到影响，举个例子：例如，LR8最初将KA映射到逻辑节点编号LN2，该节点存储叶子的物理地址102。叶节点LN1因插入而拆分后(物理地址为327的新叶节点)，KA经过再训练后的最新逻辑节点号为LN3。然而，陈旧的TT仍然将KA映射到物理地址102，即KA的正确位置。因此，客户端仍然可以使用陈旧模型和tt的组合来查找键<br>    ○ 分裂影响到的节点（新产生的节点、原节点）：incarnation对应不上，需要更新模型，也不会造成影响。</p>
+<p>speculative execution<br>叶节点的分割只是将键值对的后半部分(按键排序)移动到它的新兄弟叶节点，因此预测结果落在分裂节点上的情况下，数据有可能在他的兄弟节点上，所以可以通过指针跳到兄弟节点上去拿数据。<br>目前只会检测一个相邻节点，因为观察到级联分裂很少发生。<br>这种优化对于以插入为主的负载来说很重要，因为插入操作和retraining操作会很消耗server端的CPU</p>
+<p>model expansion<br>当KV对的规模持续扩大时，每个模型需要拟合的CDF曲线就越复杂，准确率也会随之下降，所以要及时的增加模型的个数来防止误差持续扩大。</p>
+<p>Discussion<br>variable-length keys<br>现阶段是定长的K和V，都是8B，以后可以通过添加指针跳转来做到变长</p>
+<p>Data distribution<br>是一个trade-off，需要在XCACHE内存占用、XSTORE性能、XMODEL训练成本之间做取舍，文中采用的是普通的LR，NN的训练成本太高。</p>
+<p>性能测试</p>
+<p>测试名称    YCSB-A    YCSB-B    YCSB-C    YCSB-D    YCSB-E    YCSB-F<br>类型    50% Read+50% Update    90% Read+10% Update    100% Read    95% Read+5% Insert    95% Scan+5% Insert    50% Read+50% ReadModifyUpdate</p>
+<p>● 在B、C图中显示出了冷启动的优势</p>
+
       
     </div>
 
@@ -319,8 +397,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-11-24 16:04:09" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:09+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 16:04:09 / 修改时间：19:17:06" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:09+08:00">2021-11-24</time>
     </span>
 
   
