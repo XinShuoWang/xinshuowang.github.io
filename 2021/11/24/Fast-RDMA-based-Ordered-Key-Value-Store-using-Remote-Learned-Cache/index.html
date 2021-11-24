@@ -20,12 +20,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Learned IndexB-Tree其实也是一种模型：F(Key)&#x3D; AccuratePosition使用NN之后：F(Key) &#x3D; PredictPosition，之后还需要在区间[PredictPosition - MinErr，PredictPosition - MaxErr]内寻找Key CDF：Cumulative Distribution Function，累计分布函数 索引：[(k">
+<meta name="description" content="作者简介魏星达，现上海交通大学助理教授，所属软件学院并行与分布式系统研究所，主要研究方向为分布式系统和操作系统。于2021年在上海交通大学获得博士学位，在包括SOSP和OSDI等操作系统旗舰会议上发表论文数篇。曾获2018年微软学者奖学金和2020年华为奥林帕斯先锋奖，博士论文获2021年ACM ChinaSys优秀博士学位论文奖，并获得了2021年ACM SIGOPS Dennis M. Rit">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Fast RDMA-based Ordered Key-Value Store using Remote Learned Cache">
 <meta property="og:url" content="http://example.com/2021/11/24/Fast-RDMA-based-Ordered-Key-Value-Store-using-Remote-Learned-Cache/index.html">
 <meta property="og:site_name" content="云大的博客">
-<meta property="og:description" content="Learned IndexB-Tree其实也是一种模型：F(Key)&#x3D; AccuratePosition使用NN之后：F(Key) &#x3D; PredictPosition，之后还需要在区间[PredictPosition - MinErr，PredictPosition - MaxErr]内寻找Key CDF：Cumulative Distribution Function，累计分布函数 索引：[(k">
+<meta property="og:description" content="作者简介魏星达，现上海交通大学助理教授，所属软件学院并行与分布式系统研究所，主要研究方向为分布式系统和操作系统。于2021年在上海交通大学获得博士学位，在包括SOSP和OSDI等操作系统旗舰会议上发表论文数篇。曾获2018年微软学者奖学金和2020年华为奥林帕斯先锋奖，博士论文获2021年ACM ChinaSys优秀博士学位论文奖，并获得了2021年ACM SIGOPS Dennis M. Rit">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://z3.ax1x.com/2021/11/24/oisQAO.png">
 <meta property="og:image" content="https://z3.ax1x.com/2021/11/24/ois89H.png">
@@ -48,7 +48,7 @@
 <meta property="og:image" content="https://z3.ax1x.com/2021/11/24/oiss3j.png">
 <meta property="og:image" content="https://z3.ax1x.com/2021/11/24/oisygs.png">
 <meta property="article:published_time" content="2021-11-24T08:04:37.000Z">
-<meta property="article:modified_time" content="2021-11-24T11:40:46.460Z">
+<meta property="article:modified_time" content="2021-11-24T11:45:21.528Z">
 <meta property="article:author" content="XinShuoWang">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Learned-Index"><span class="nav-number">1.</span> <span class="nav-text">Learned Index</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RDMA-KV"><span class="nav-number">2.</span> <span class="nav-text">RDMA KV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#S-RKV"><span class="nav-number">2.1.</span> <span class="nav-text">S-RKV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-RKV"><span class="nav-number">2.2.</span> <span class="nav-text">C-RKV</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#X-Store"><span class="nav-number">3.</span> <span class="nav-text">X-Store</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Train"><span class="nav-number">3.1.</span> <span class="nav-text">Train</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GET"><span class="nav-number">3.2.</span> <span class="nav-text">GET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UPDATE"><span class="nav-number">3.3.</span> <span class="nav-text">UPDATE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INSERT-DELETE"><span class="nav-number">3.4.</span> <span class="nav-text">INSERT DELETE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Discussion"><span class="nav-number">4.</span> <span class="nav-text">Discussion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">性能测试</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E8%80%85%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">作者简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Learned-Index"><span class="nav-number">2.</span> <span class="nav-text">Learned Index</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RDMA-KV"><span class="nav-number">3.</span> <span class="nav-text">RDMA KV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#S-RKV"><span class="nav-number">3.1.</span> <span class="nav-text">S-RKV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-RKV"><span class="nav-number">3.2.</span> <span class="nav-text">C-RKV</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#X-Store"><span class="nav-number">4.</span> <span class="nav-text">X-Store</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Train"><span class="nav-number">4.1.</span> <span class="nav-text">Train</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GET"><span class="nav-number">4.2.</span> <span class="nav-text">GET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UPDATE"><span class="nav-number">4.3.</span> <span class="nav-text">UPDATE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INSERT-DELETE"><span class="nav-number">4.4.</span> <span class="nav-text">INSERT DELETE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Discussion"><span class="nav-number">5.</span> <span class="nav-text">Discussion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">6.</span> <span class="nav-text">性能测试</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -223,7 +223,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-11-24 16:04:37 / 修改时间：19:40:46" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:37+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 16:04:37 / 修改时间：19:45:21" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:37+08:00">2021-11-24</time>
     </span>
 
   
@@ -236,7 +236,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="Learned-Index"><a href="#Learned-Index" class="headerlink" title="Learned Index"></a>Learned Index</h1><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisQAO"><img src="https://z3.ax1x.com/2021/11/24/oisQAO.png" alt="oisQAO.png"></a><br>B-Tree其实也是一种模型：<code>F(Key)= AccuratePosition</code><br>使用NN之后：<code>F(Key) = PredictPosition</code>，之后还需要在区间<code>[PredictPosition - MinErr，PredictPosition - MaxErr]</code>内寻找Key<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois89H"><img src="https://z3.ax1x.com/2021/11/24/ois89H.png" alt="ois89H.png"></a></p>
+        <h1 id="作者简介"><a href="#作者简介" class="headerlink" title="作者简介"></a>作者简介</h1><p>魏星达，现上海交通大学助理教授，所属软件学院并行与分布式系统研究所，主要研究方向为分布式系统和操作系统。于2021年在上海交通大学获得博士学位，在包括SOSP和OSDI等操作系统旗舰会议上发表论文数篇。曾获2018年微软学者奖学金和2020年华为奥林帕斯先锋奖，博士论文获2021年ACM ChinaSys优秀博士学位论文奖，并获得了2021年ACM SIGOPS Dennis M. Ritchie Doctoral Dissertation Award的Honorable Mention。</p>
+<h1 id="Learned-Index"><a href="#Learned-Index" class="headerlink" title="Learned Index"></a>Learned Index</h1><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisQAO"><img src="https://z3.ax1x.com/2021/11/24/oisQAO.png" alt="oisQAO.png"></a><br>B-Tree其实也是一种模型：<code>F(Key)= AccuratePosition</code><br>使用NN之后：<code>F(Key) = PredictPosition</code>，之后还需要在区间<code>[PredictPosition - MinErr，PredictPosition - MaxErr]</code>内寻找Key<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois89H"><img src="https://z3.ax1x.com/2021/11/24/ois89H.png" alt="ois89H.png"></a></p>
 <p>CDF：Cumulative Distribution Function，累计分布函数</p>
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisnnx"><img src="https://z3.ax1x.com/2021/11/24/oisnnx.png" alt="oisnnx.png"></a><br>索引：<code>[(k1,v1_pos),(k2,v2_pos),(k3,v3_pos),(k4,v4_pos),(k5,v5_pos),(k6,v6_pos)]</code>，其中<code>k1&lt;=k2&lt;=k3&lt;=k4&lt;=k5&lt;=k6</code>，<code>v1_pos&lt;=v2_pos&lt;=v3_pos&lt;=v4_pos&lt;=v5_pos&lt;=v6_pos</code><br>这时就可以看成一条单调递增曲线，如上图</p>
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisKHK"><img src="https://z3.ax1x.com/2021/11/24/oisKHK.png" alt="oisKHK.png"></a><br><code>ModelId = (PredictionPostion / TotalRecords) * NumModelsThatLayer</code><br>上层采用NN，越到底层待拟合数据量越少，这时候就要采用Linea Regression来进行训练（效果好、参数少）</p>
@@ -261,7 +262,7 @@
 <li>根据上一步的结果选择sub-model，然后将K送入此sub-model再进行推理，得到pos，根据误差来计算pos的上下界</li>
 <li>然后使用doorbell batching技术一次性的把相关Leaf全都读到client端，然后在本地进行遍历寻找K是否匹配，如果匹配就可以根据对应关系得到V的地址，再使用一次RDMA Read就能拿到数据。</li>
 </ol>
-<p><strong>为什么不直接拿V到本地？</strong><br>理论来说，如果叶子存的是具体数据，那么一次 RDMA 就可以完全读回。这边 XSTORE 使用两次是为了节约 RDMA 读的 payload。<br>举例来说，如果使用一次 RDMA，则需要读取叶子里的所有数据加上 ，这样会读取过多的值 $(n sizeof(Key) + n sizeof(Value)其中n$ 是叶子节点最多的 item 数量），造成 RDMA bandwidth 的浪费。如果使用两次 RDMA，则总共需要读  数据，如果  的大小比  大很多（通常是这种情况），则会更加高效。</p>
+<p><strong>为什么不直接拿V到本地？</strong><br>理论来说，如果叶子存的是具体数据，那么一次 RDMA 就可以完全读回。这边 XSTORE 使用两次是为了节约 RDMA 读的 payload。<br>举例来说，如果使用一次 RDMA，则需要读取叶子里的所有数据加上 ，这样会读取过多的值 <code>$(n sizeof(Key) + n sizeof(Value)</code>其中n$ 是叶子节点最多的 item 数量），造成 RDMA bandwidth 的浪费。如果使用两次 RDMA，则总共需要读  数据，如果  的大小比  大很多（通常是这种情况），则会更加高效。</p>
 <p><strong>怎么确定拿到的数据是正确的？</strong><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois0US"><img src="https://z3.ax1x.com/2021/11/24/ois0US.png" alt="ois0US.png"></a></p>
 <ul>
 <li>会有fallback机制<ul>
@@ -285,7 +286,7 @@
 <h2 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h2><p>不会影响KV的位置，所以可以算得上是static workloads</p>
 <p><strong>position hint</strong><br>会在本地先预测出要更新的V的位置，然后连同更新请求发送给server，然后server可以利用position hint减少查询次数</p>
 <h2 id="INSERT-DELETE"><a href="#INSERT-DELETE" class="headerlink" title="INSERT DELETE"></a>INSERT DELETE</h2><p>发生在服务端，所以和B+Tree的操作差不多，但是每次需要使incarnation自增从而使客户端意识到叶子结点发生了变化（分裂操作）</p>
-<p>retraining and invalidation<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisB4g"><img src="https://z3.ax1x.com/2021/11/24/oisB4g.png" alt="oisB4g.png"></a></p>
+<p><strong>retraining and invalidation</strong><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisB4g"><img src="https://z3.ax1x.com/2021/11/24/oisB4g.png" alt="oisB4g.png"></a></p>
 <ul>
 <li>从客户端来说，如果叶子节点没有发生分裂，查询可以正常进行（不存在就更新模型）</li>
 <li>从客户端来说，如果叶子结点发生分裂<ul>
