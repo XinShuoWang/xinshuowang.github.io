@@ -298,7 +298,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-11-24 16:04:37 / 修改时间：19:37:12" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:37+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 16:04:37 / 修改时间：19:40:46" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:37+08:00">2021-11-24</time>
     </span>
 
   
@@ -316,8 +316,17 @@
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisnnx"><img src="https://z3.ax1x.com/2021/11/24/oisnnx.png" alt="oisnnx.png"></a><br>索引：<code>[(k1,v1_pos),(k2,v2_pos),(k3,v3_pos),(k4,v4_pos),(k5,v5_pos),(k6,v6_pos)]</code>，其中<code>k1&lt;=k2&lt;=k3&lt;=k4&lt;=k5&lt;=k6</code>，<code>v1_pos&lt;=v2_pos&lt;=v3_pos&lt;=v4_pos&lt;=v5_pos&lt;=v6_pos</code><br>这时就可以看成一条单调递增曲线，如上图</p>
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisKHK"><img src="https://z3.ax1x.com/2021/11/24/oisKHK.png" alt="oisKHK.png"></a><br><code>ModelId = (PredictionPostion / TotalRecords) * NumModelsThatLayer</code><br>上层采用NN，越到底层待拟合数据量越少，这时候就要采用Linea Regression来进行训练（效果好、参数少）</p>
 <h1 id="RDMA-KV"><a href="#RDMA-KV" class="headerlink" title="RDMA KV"></a>RDMA KV</h1><h2 id="S-RKV"><a href="#S-RKV" class="headerlink" title="S-RKV"></a>S-RKV</h2><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisuB6"><img src="https://z3.ax1x.com/2021/11/24/oisuB6.png" alt="oisuB6.png"></a><br>在这种设计中CPU是瓶颈，只是相当于用RDMA重新实现了RPC而已，限制了扩展性<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois14e"><img src="https://z3.ax1x.com/2021/11/24/ois14e.png" alt="ois14e.png"></a></p>
-<h2 id="C-RKV"><a href="#C-RKV" class="headerlink" title="C-RKV"></a>C-RKV</h2><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oislND"><img src="https://z3.ax1x.com/2021/11/24/oislND.png" alt="oislND.png"></a><br>在这种设计中RDMA的遍历操作是瓶颈，复杂度O(logN)，所以一些人选择增加cache来提高性能，但是cache有这几方面缺点：<br>● 需要缓存层数比较多效果才比较好，需要在缓存大小与性能之间做trade-off<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisG3d"><img src="https://z3.ax1x.com/2021/11/24/oisG3d.png" alt="oisG3d.png"></a><br>● 容易出现大量cache失效，因为有的叶子裂变或传导至root节点，从下图可以看到，缓存的越多导致的缓存失效就越多，从而引发的抖动就越大。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisJgA"><img src="https://z3.ax1x.com/2021/11/24/oisJgA.png" alt="oisJgA.png"></a><br>● 时延对比<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisYjI"><img src="https://z3.ax1x.com/2021/11/24/oisYjI.png" alt="oisYjI.png"></a></p>
-<h1 id="X-Store"><a href="#X-Store" class="headerlink" title="X-Store"></a>X-Store</h1><p>● 对于GET、SCAN操作使用client-direct设计，对于UPDATE、INSERT、DELETE使用server-centric设计<br>● 客户端（Learned Cache）与服务端（B+Tree）采用不同的缓存结构，这样就可以利用不同缓存结构的优势<br>● 因为Learned Cache要求KV必须是单调增，但是实际的Value并不会真的是单调递增的，如下图所示：插入一个叶子的物理地址是0x30，这样就将之前的单调增状态打破了，所以需要处理这种情况，方法就是增加一个Translation Table（TT）来映射（本质就是一个Map，用来完成从Logical Leaf Number到Actual Leaf Number的映射）。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisNut"><img src="https://z3.ax1x.com/2021/11/24/oisNut.png" alt="oisNut.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oiswE8"><img src="https://z3.ax1x.com/2021/11/24/oiswE8.png" alt="oiswE8.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisUDP"><img src="https://z3.ax1x.com/2021/11/24/oisUDP.png" alt="oisUDP.png"></a></p>
+<h2 id="C-RKV"><a href="#C-RKV" class="headerlink" title="C-RKV"></a>C-RKV</h2><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oislND"><img src="https://z3.ax1x.com/2021/11/24/oislND.png" alt="oislND.png"></a><br>在这种设计中RDMA的遍历操作是瓶颈，复杂度O(logN)，所以一些人选择增加cache来提高性能，但是cache有这几方面缺点：</p>
+<ul>
+<li>需要缓存层数比较多效果才比较好，需要在缓存大小与性能之间做trade-off<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisG3d"><img src="https://z3.ax1x.com/2021/11/24/oisG3d.png" alt="oisG3d.png"></a></li>
+<li>容易出现大量cache失效，因为有的叶子裂变或传导至root节点，从下图可以看到，缓存的越多导致的缓存失效就越多，从而引发的抖动就越大。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisJgA"><img src="https://z3.ax1x.com/2021/11/24/oisJgA.png" alt="oisJgA.png"></a></li>
+<li>时延对比<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisYjI"><img src="https://z3.ax1x.com/2021/11/24/oisYjI.png" alt="oisYjI.png"></a></li>
+</ul>
+<h1 id="X-Store"><a href="#X-Store" class="headerlink" title="X-Store"></a>X-Store</h1><ul>
+<li>对于GET、SCAN操作使用client-direct设计，对于UPDATE、INSERT、DELETE使用server-centric设计</li>
+<li>客户端（Learned Cache）与服务端（B+Tree）采用不同的缓存结构，这样就可以利用不同缓存结构的优势</li>
+<li>因为Learned Cache要求KV必须是单调增，但是实际的Value并不会真的是单调递增的，如下图所示：插入一个叶子的物理地址是0x30，这样就将之前的单调增状态打破了，所以需要处理这种情况，方法就是增加一个Translation Table（TT）来映射（本质就是一个Map，用来完成从Logical Leaf Number到Actual Leaf Number的映射）。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisNut"><img src="https://z3.ax1x.com/2021/11/24/oisNut.png" alt="oisNut.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oiswE8"><img src="https://z3.ax1x.com/2021/11/24/oiswE8.png" alt="oiswE8.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisUDP"><img src="https://z3.ax1x.com/2021/11/24/oisUDP.png" alt="oisUDP.png"></a></li>
+</ul>
 <h2 id="Train"><a href="#Train" class="headerlink" title="Train"></a>Train</h2><ol>
 <li>拿整个KV的CDF曲线去训练，X就是Key，Y是KV对在整个系统中的次序（这个K在所有K中按从大到小排序是第几名），最终得到一个估计误差在[MinErr，MaxErr]范围内的模型TOP</li>
 <li>再遍历K，把每个K都送入TOP模型进行推理，得到K应该划分给哪一个sub-model去处理，每个sub-model就是Linear Regression模型，X是Key，Y就是KV对在整个系统中的次序（这个K在所有K中按从大到小排序是第几名）</li>
@@ -328,17 +337,64 @@
 <li>然后使用doorbell batching技术一次性的把相关Leaf全都读到client端，然后在本地进行遍历寻找K是否匹配，如果匹配就可以根据对应关系得到V的地址，再使用一次RDMA Read就能拿到数据。</li>
 </ol>
 <p><strong>为什么不直接拿V到本地？</strong><br>理论来说，如果叶子存的是具体数据，那么一次 RDMA 就可以完全读回。这边 XSTORE 使用两次是为了节约 RDMA 读的 payload。<br>举例来说，如果使用一次 RDMA，则需要读取叶子里的所有数据加上 ，这样会读取过多的值 $(n sizeof(Key) + n sizeof(Value)其中n$ 是叶子节点最多的 item 数量），造成 RDMA bandwidth 的浪费。如果使用两次 RDMA，则总共需要读  数据，如果  的大小比  大很多（通常是这种情况），则会更加高效。</p>
-<p><strong>怎么确定拿到的数据是正确的？</strong><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois0US"><img src="https://z3.ax1x.com/2021/11/24/ois0US.png" alt="ois0US.png"></a><br>● 会有fallback机制<br>    ○ 本地没有要查询K所在的Leaf的记录，产生fallback<br>    ○ 拿到的Leaf的incarnation与本地不对应，invalidate本地记录，产生fallback<br>● 在拿V的时候应该还会去拿incarnation，来对比数据是否发生变化</p>
-<p><strong>GET时K不存在怎么办，SCAN时K不存在怎么办？</strong><br>● GET时在第24行会返回不存在（TT的Entry是有效的、Leaf的incarnation也是对的，但是就是找不到K，所以返回NOT_FOUND）<br>    ○ 比如对于K=6来说，模型给出预测：[3，4]，可以cover住K=5和K=7的情况（cover：保证了单调性）<br>● 模型在局部和整体上必须是单调的。SCAN时会出现下面这种情况：每个模型都能正确的工作（模型内预测结果是单调的），但是模型间的预测结果不是单调的，所以会出现问题，可以增加一个数据点在边界来避免这种问题。<br>    ○ 对于K=10来说，给出预测：[6,7]，这时就不能确定K=10是不存在还是模型已经过时了，而且在SCAN的时候直接会导致13被忽略从而结果出错。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisaHf"><img src="https://z3.ax1x.com/2021/11/24/oisaHf.png" alt="oisaHf.png"></a></p>
+<p><strong>怎么确定拿到的数据是正确的？</strong><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois0US"><img src="https://z3.ax1x.com/2021/11/24/ois0US.png" alt="ois0US.png"></a></p>
+<ul>
+<li>会有fallback机制<ul>
+<li>本地没有要查询K所在的Leaf的记录，产生fallback</li>
+<li>拿到的Leaf的incarnation与本地不对应，invalidate本地记录，产生fallback</li>
+</ul>
+</li>
+<li>在拿V的时候应该还会去拿incarnation，来对比数据是否发生变化</li>
+</ul>
+<p><strong>GET时K不存在怎么办，SCAN时K不存在怎么办？</strong></p>
+<ul>
+<li>GET时在第24行会返回不存在（TT的Entry是有效的、Leaf的incarnation也是对的，但是就是找不到K，所以返回NOT_FOUND）<ul>
+<li>比如对于K=6来说，模型给出预测：[3，4]，可以cover住K=5和K=7的情况（cover：保证了单调性）</li>
+</ul>
+</li>
+<li>模型在局部和整体上必须是单调的。SCAN时会出现下面这种情况：每个模型都能正确的工作（模型内预测结果是单调的），但是模型间的预测结果不是单调的，所以会出现问题，可以增加一个数据点在边界来避免这种问题。<ul>
+<li>对于K=10来说，给出预测：[6,7]，这时就不能确定K=10是不存在还是模型已经过时了，而且在SCAN的时候直接会导致13被忽略从而结果出错。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisaHf"><img src="https://z3.ax1x.com/2021/11/24/oisaHf.png" alt="oisaHf.png"></a></li>
+</ul>
+</li>
+</ul>
 <h2 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h2><p>不会影响KV的位置，所以可以算得上是static workloads</p>
 <p><strong>position hint</strong><br>会在本地先预测出要更新的V的位置，然后连同更新请求发送给server，然后server可以利用position hint减少查询次数</p>
 <h2 id="INSERT-DELETE"><a href="#INSERT-DELETE" class="headerlink" title="INSERT DELETE"></a>INSERT DELETE</h2><p>发生在服务端，所以和B+Tree的操作差不多，但是每次需要使incarnation自增从而使客户端意识到叶子结点发生了变化（分裂操作）</p>
-<p>retraining and invalidation<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisB4g"><img src="https://z3.ax1x.com/2021/11/24/oisB4g.png" alt="oisB4g.png"></a><br>● 从客户端来说，如果叶子节点没有发生分裂，查询可以正常进行（不存在就更新模型）<br>● 从客户端来说，如果叶子结点发生分裂<br>    ○ 不属于分裂影响到的节点：即使模型不更新也不会受到影响，举个例子：例如，LR8最初将KA映射到逻辑节点编号LN2，该节点存储叶子的物理地址102。叶节点LN1因插入而拆分后(物理地址为327的新叶节点)，KA经过再训练后的最新逻辑节点号为LN3。然而，陈旧的TT仍然将KA映射到物理地址102，即KA的正确位置。因此，客户端仍然可以使用陈旧模型和tt的组合来查找键<br>    ○ 分裂影响到的节点（新产生的节点、原节点）：incarnation对应不上，需要更新模型，也不会造成影响。</p>
+<p>retraining and invalidation<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisB4g"><img src="https://z3.ax1x.com/2021/11/24/oisB4g.png" alt="oisB4g.png"></a></p>
+<ul>
+<li>从客户端来说，如果叶子节点没有发生分裂，查询可以正常进行（不存在就更新模型）</li>
+<li>从客户端来说，如果叶子结点发生分裂<ul>
+<li>不属于分裂影响到的节点：即使模型不更新也不会受到影响，举个例子：例如，LR8最初将KA映射到逻辑节点编号LN2，该节点存储叶子的物理地址102。叶节点LN1因插入而拆分后(物理地址为327的新叶节点)，KA经过再训练后的最新逻辑节点号为LN3。然而，陈旧的TT仍然将KA映射到物理地址102，即KA的正确位置。因此，客户端仍然可以使用陈旧模型和tt的组合来查找键</li>
+<li>分裂影响到的节点（新产生的节点、原节点）：incarnation对应不上，需要更新模型，也不会造成影响。</li>
+</ul>
+</li>
+</ul>
 <p><strong>speculative execution</strong><br>叶节点的分割只是将键值对的后半部分(按键排序)移动到它的新兄弟叶节点，因此预测结果落在分裂节点上的情况下，数据有可能在他的兄弟节点上，所以可以通过指针跳到兄弟节点上去拿数据。<br>目前只会检测一个相邻节点，因为观察到级联分裂很少发生。<br>这种优化对于以插入为主的负载来说很重要，因为插入操作和retraining操作会很消耗server端的CPU</p>
 <p><strong>model expansion</strong><br>当KV对的规模持续扩大时，每个模型需要拟合的CDF曲线就越复杂，准确率也会随之下降，所以要及时的增加模型的个数来防止误差持续扩大。</p>
 <h1 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h1><p><strong>variable-length keys</strong><br>现阶段是定长的K和V，都是8B，以后可以通过添加指针跳转来做到变长</p>
 <p><strong>Data distribution</strong><br>是一个trade-off，需要在XCACHE内存占用、XSTORE性能、XMODEL训练成本之间做取舍，文中采用的是普通的LR，NN的训练成本太高。</p>
-<h1 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h1><p>|-|-|-|-|-|-|-|<br>|测试名称|    YCSB-A|    YCSB-B|    YCSB-C|    YCSB-D|    YCSB-E|    YCSB-F|<br>类型|    50% Read+50% Update    |90% Read+10% Update|    100% Read|    95% Read+5% Insert|    95% Scan+5% Insert|    50% Read+50% ReadModifyUpdate|</p>
+<h1 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h1><table>
+<thead>
+<tr>
+<th>测试名称</th>
+<th>YCSB-A</th>
+<th>YCSB-B</th>
+<th>YCSB-C</th>
+<th>YCSB-D</th>
+<th>YCSB-E</th>
+<th>YCSB-F</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>50% Read+50% Update</td>
+<td>90% Read+10% Update</td>
+<td>100% Read</td>
+<td>95% Read+5% Insert</td>
+<td>95% Scan+5% Insert</td>
+<td>50% Read+50% ReadModifyUpdate</td>
+</tr>
+</tbody></table>
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisrCQ"><img src="https://z3.ax1x.com/2021/11/24/oisrCQ.png" alt="oisrCQ.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/ois2D0"><img src="https://z3.ax1x.com/2021/11/24/ois2D0.png" alt="ois2D0.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oiss3j"><img src="https://z3.ax1x.com/2021/11/24/oiss3j.png" alt="oiss3j.png"></a><br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oisygs"><img src="https://z3.ax1x.com/2021/11/24/oisygs.png" alt="oisygs.png"></a></p>
 <p>● 在B、C图中显示出了冷启动的优势</p>
 
