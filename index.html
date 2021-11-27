@@ -762,10 +762,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-11-24 16:04:09 / 修改时间：19:51:17" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:09+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 16:04:09" itemprop="dateCreated datePublished" datetime="2021-11-24T16:04:09+08:00">2021-11-24</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 16:28:34" itemprop="dateModified" datetime="2021-11-27T16:28:34+08:00">2021-11-27</time>
+      </span>
 
   
 </div>
@@ -808,6 +814,10 @@
 <li>控制并发线程数</li>
 <li>避免跨NUMA节点的访问</li>
 </ol>
+<h1 id="实际使用指南"><a href="#实际使用指南" class="headerlink" title="实际使用指南"></a>实际使用指南</h1><h2 id="精准控制AEP状态的指令"><a href="#精准控制AEP状态的指令" class="headerlink" title="精准控制AEP状态的指令"></a>精准控制AEP状态的指令</h2><h3 id="CLFLUSH"><a href="#CLFLUSH" class="headerlink" title="CLFLUSH"></a>CLFLUSH</h3><p>CLFLUSH（Cache Line Flush，缓存行刷回）能够把指定缓存行（Cache Line）从所有级缓存中淘汰，若该缓存行中的数据被修改过，则将该数据写入主存；支持现状：目前主流处理器均支持该指令。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oe4sxA"><img src="https://z3.ax1x.com/2021/11/27/oe4sxA.png" alt="oe4sxA.png"></a></p>
+<h3 id="CLFLUSHOPT"><a href="#CLFLUSHOPT" class="headerlink" title="CLFLUSHOPT"></a>CLFLUSHOPT</h3><p>CLFLUSHOPT（Optimized CLFLUSH，优化的缓存行刷回）作用与 CLFLUSH 相似，但其之间的指令级并行度更高，比如在访问不同 CacheLine 时，CLFLUHOPT 可以乱序执行。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oe4crt"><img src="https://z3.ax1x.com/2021/11/27/oe4crt.png" alt="oe4crt.png"></a></p>
+<h3 id="CLWB"><a href="#CLWB" class="headerlink" title="CLWB"></a>CLWB</h3><p>CLWB（Cache Line Write Back，缓存行写回）作用与 CLFLUSHOPT 相似，但在将缓存行中的数据写回之后，该缓存行仍将呈现为未被修改过的状态。<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/oe4RVf"><img src="https://z3.ax1x.com/2021/11/27/oe4RVf.png" alt="oe4RVf.png"></a></p>
+<h3 id="NT-STORES"><a href="#NT-STORES" class="headerlink" title="NT STORES"></a>NT STORES</h3><p>NT STORES（Non­Temporal stores） 是一系列用于存储不同字长数据的指令，其包括 MOVNTDQ 等。NT Stores 指令在传输数据时能够绕过缓存，而直接将数据写入主存。</p>
 
       
     </div>
