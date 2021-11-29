@@ -4,3 +4,4 @@
 - [Fast RDMA-based Ordered Key-Value Store using Remote Learned Cache](./4.html)
 - [Rethinking File Mapping for Persistent Memory](./5.html)
 - [Vectorization vs. Compilation in Query Execution](./6.html)
+- [Efficiently Compiling Efficient Query Plans for Modern Hardware](./7.html)
