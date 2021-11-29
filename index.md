@@ -1,5 +1,5 @@
 # [network](./network/index.html)
 # [os](./os/index.html)
 # [computer architecture](./ca/index.html)
-# [database](./db/index.html)
+# [database](./database/index.html)
 # [cpp](./cpp/index.html)
