@@ -5,3 +5,7 @@
 - [Rethinking File Mapping for Persistent Memory](./5.html)
 - [Vectorization vs. Compilation in Query Execution](./6.html)
 - [Efficiently Compiling Efficient Query Plans for Modern Hardware](./7.html)
+- [MonetDB/X100: Hyper-Pipelining Query Execution](./8.html)
+- [Rethinking SIMD Vectorization for In-Memory Databases](./9.html)
+- [Segcache: a memory-efficient and scalable in-memory key-value cache for small objects](./10.html)
+- [The Snowflake Elastic Data Warehouse](./11.html)
