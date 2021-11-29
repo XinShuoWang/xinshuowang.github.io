@@ -5,8 +5,10 @@
 - [lock-free编程](./5.html)
 - [mutex编程](./6.html)
 
-## 其它
+## CPU
 - [CPU执行指令](./3.html)
-- [字节对齐](./7.html)
 - [CPU分支预测](./8.html)
 - [Free Lunch是什么意思？](./9.html)
+
+## 内存
+- [字节对齐](./7.html)
