@@ -1,1 +1,6 @@
 - [A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing](./1.html)
+- [An Empirical Guide to the Behavior and Use of Scalable Persistent Memory](./2.html)
+- [Crystal: A Unified Cache Storage System for Analytical Databases](./3.html)
+- [Fast RDMA-based Ordered Key-Value Store using Remote Learned Cache](./4.html)
+- [Rethinking File Mapping for Persistent Memory](./5.html)
+- [Vectorization vs. Compilation in Query Execution](./6.html)
