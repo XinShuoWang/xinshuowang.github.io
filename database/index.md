@@ -13,4 +13,6 @@
 
 ## Clickhouse笔记
 - [Clickhouse查询流程](./12.html)
-- [Pipeline](./13.html)
+- [Clickhouse的Pipeline实践](./13.html)
+- [Clickhouse的SIMD实践](./14.html)
+- [Clickhouse的JIT实践](./15.html)
