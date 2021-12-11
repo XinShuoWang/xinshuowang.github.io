@@ -4,3 +4,5 @@
 - [5种网络IO](./3.html)
 
 ## muduo
+- [Reactor模式](./4.html)
+- [Proactor模式](./5.html)
