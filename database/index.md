@@ -1,17 +1,17 @@
-## 概述
-### 存储
+# 概述
+## 存储
 - [LSM Tree架构](./17.html)
 
-### 事务
+## 事务
 
 
-### 查询
+## 查询
 
-### 高可用
+## 高可用
 - [Paxos](./18.html)
 - [Raft](./19.html)
 
-## 论文分享
+# 论文分享
 - [A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing](./1.html)
 - [An Empirical Guide to the Behavior and Use of Scalable Persistent Memory](./2.html)
 - [Crystal: A Unified Cache Storage System for Analytical Databases](./3.html)
@@ -24,7 +24,7 @@
 - [Segcache: a memory-efficient and scalable in-memory key-value cache for small objects](./10.html)
 - [The Snowflake Elastic Data Warehouse](./11.html)
 
-## Clickhouse笔记
+# Clickhouse笔记
 - [OLAP数据库中Operator Cache设计](./16.html)
 - [Clickhouse查询流程](./12.html)
 - [Clickhouse的Pipeline实践](./13.html)
