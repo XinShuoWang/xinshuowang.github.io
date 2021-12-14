@@ -3,7 +3,6 @@
 - [Operating System](./os/index.html)
 - [Computer Architecture](./ca/index.html)
 - [Database](./database/index.html)
-- [C++](./cpp/index.html)
 - [Algorithm](./algorithm/index.html)
 
 <hr>
