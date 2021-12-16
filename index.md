@@ -13,8 +13,5 @@
   - 向量化
   - 缓存匹配
   - RDMA
-- BigFoot网络代理
-  - epoll
-  - 线程池
-  - sock5协议
   - 多线程
+  - lock-free
