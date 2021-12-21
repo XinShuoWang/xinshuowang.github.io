@@ -28,6 +28,6 @@
 # Clickhouse笔记
 - [OLAP数据库中Operator Cache设计](./16.html)
 - [Clickhouse查询流程](./12.html)
-- [Clickhouse的Pipeline实践](./13.html)
-- [Clickhouse的SIMD实践](./14.html)
+- [Clickhouse的explain语句](./13.html)
+- [Clickhouse的MergeTree存储](./14.html)
 - [Clickhouse的JIT实践](./15.html)
