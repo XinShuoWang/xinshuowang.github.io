@@ -31,3 +31,4 @@
 - [Clickhouse的explain语句](./13.html)
 - [Clickhouse的MergeTree存储](./14.html)
 - [Clickhouse的JIT实践](./15.html)
+- [Clickhouse的SIMD实践](./22.html)
