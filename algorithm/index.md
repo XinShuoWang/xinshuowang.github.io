@@ -1,14 +1,12 @@
-# 刷题笔记
-- [笔记](./3.html)
+# 算法
+- [笔记](common_algorithm/1.html)
+- [KMP算法](common_algorithm/2.html)
 
 # C++语法
-- [Virtual实现](./2.html)
-- [智能指针实现方式](./4.html)
+- [Virtual实现](cpp/1.html)
+- [智能指针实现方式](cpp/1.html)
 
 # STL
-- [HashMap]()
-- [Vector]()
-- [Set]()
-
-# 字符串
-- [KMP算法](./1.html)
+- [HashMap](stl/1.html)
+- [Vector](stl/2.html)
+- [Set](stl/3.html)
