@@ -1,7 +1,7 @@
 # 基本网络知识
 ## 物理层
-- [无线通信原理](pysical_layer/1.html)
-- [双绞线](pysical_layer/2.html)
+- [无线通信原理](phsical_layer/1.html)
+- [双绞线](phsical_layer/2.html)
 
 ## 链路层
 - [交换机](link_layer/1.html)
