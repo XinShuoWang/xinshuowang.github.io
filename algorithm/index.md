@@ -6,6 +6,8 @@
 - [Virtual实现](cpp/1.html)
 - [智能指针实现方式](cpp/2.html)
 - [编译流程](cpp/3.html)
+- [inline关键字](cpp/4.html)
+- [static关键字](cpp/5.html)
 
 # STL
 - [HashMap](stl/1.html)
