@@ -4,7 +4,8 @@
 
 # C++语法
 - [Virtual实现](cpp/1.html)
-- [智能指针实现方式](cpp/1.html)
+- [智能指针实现方式](cpp/2.html)
+- [编译流程](cpp/3.html)
 
 # STL
 - [HashMap](stl/1.html)
