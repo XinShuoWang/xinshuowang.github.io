@@ -9,6 +9,7 @@
 - [inline关键字](cpp/4.html)
 - [static关键字](cpp/5.html)
 - [左值、右值、移动语义](cpp/6.html)
+- [ASCII、GB2312、GBK、Unicode、UTF-8之间的关系](cpp/7.html)
 
 # STL
 - [HashMap](stl/1.html)
