@@ -8,6 +8,7 @@
 - [编译流程](cpp/3.html)
 - [inline关键字](cpp/4.html)
 - [static关键字](cpp/5.html)
+- [左值、右值、移动语义](cpp/6.html)
 
 # STL
 - [HashMap](stl/1.html)
