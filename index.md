@@ -7,11 +7,6 @@
 
 <hr>
 
-# 项目介绍
-- AP数据库的查询缓存优化
-  - 编译执行
-  - 向量化
-  - 缓存匹配
-  - RDMA
-  - 多线程
-  - lock-free
+# 个人简历
+![简历](https://user-images.githubusercontent.com/56379080/151509866-8627f61d-587e-4213-9640-0216ede2655c.jpg)
+
