@@ -2,6 +2,7 @@
 - [笔记](common_algorithm/1.html)
 - [KMP算法](common_algorithm/2.html)
 - [快排](common_algorithm/3.html)
+- [堆排序](common_algorithm/4.html)
 
 # C++语法
 - [Virtual实现](cpp/1.html)
