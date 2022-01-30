@@ -1,6 +1,7 @@
 # 物理层
 - [无线通信原理](phsical_layer/1.html)
 - [双绞线](phsical_layer/2.html)
+- [曼彻斯特编码、差分曼彻斯特编码](phsical_layer/3.html)
 
 # 链路层
 - [交换机](link_layer/1.html)
