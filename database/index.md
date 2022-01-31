@@ -11,6 +11,7 @@
 ## 高可用
 - [Paxos](ha/1.html)
 - [Raft](ha/2.html)
+- [CAP定理](ha/3.html)
 
 # 论文分享
 - [A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing](paper/1.html)
