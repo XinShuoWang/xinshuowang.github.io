@@ -5,6 +5,7 @@
 ## 事务
 - [事务隔离级别](transaction/1.html)
 - [2 Phase commit](transaction/2.html)
+- [2 Phase Locking](transaction/3.html)
 
 ## 查询
 - [查询执行模型](query/1.html)
