@@ -29,9 +29,9 @@
 - [The Snowflake Elastic Data Warehouse](paper/11.html)
 
 # Clickhouse笔记
-- [OLAP数据库中Operator Cache设计](ck/1.html)
-- [Clickhouse查询流程](ck/2.html)
-- [Clickhouse的explain语句](ck/3.html)
-- [Clickhouse的MergeTree存储](ck/4.html)
+- [Clickhouse查询流程](ck/1.html)
+- [Clickhouse的explain语句](ck/2.html)
+- [Clickhouse的MergeTree存储](ck/3.html)
+- [OLAP数据库中Operator Cache设计](ck/4.html)
 - [Clickhouse的JIT实践](ck/5.html)
 - [Clickhouse的SIMD实践](ck/6.html)
