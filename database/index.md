@@ -9,6 +9,7 @@
 
 ## 查询
 - [查询执行模型](query/1.html)
+- [查询模块综述](query/2.html)
 
 ## 高可用
 - [Paxos](ha/1.html)
