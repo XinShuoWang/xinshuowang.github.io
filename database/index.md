@@ -28,6 +28,7 @@
 - [Rethinking SIMD Vectorization for In-Memory Databases](paper/9.html)
 - [Segcache: a memory-efficient and scalable in-memory key-value cache for small objects](paper/10.html)
 - [The Snowflake Elastic Data Warehouse](paper/11.html)
+- [解读2022 VLDB Summer School上李国良老师的Presentation](paper/12.html)
 
 # Clickhouse笔记
 - [Clickhouse查询流程](ck/1.html)
