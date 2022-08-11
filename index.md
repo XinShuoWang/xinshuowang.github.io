@@ -11,4 +11,5 @@
 - [ClickHouse、Oceanbase、PostgreSQL、MySQL](db/index.html)
 
 # 其它
+- [C/C++](language/index.html)
 - [Common Tool](tool/index.html)
