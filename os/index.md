@@ -15,6 +15,7 @@
 - [init进程](process/4.html)
 - [死锁相关](process/5.html)
 - [CPU调度算法、CPU Usage与CPU Load](process/6.html)
+- [进程状态与僵尸进程、孤儿进程](process/7.html)
 
 # 文件系统
 理解了硬链接和软链接的本质区别就代表理解了文件系统
