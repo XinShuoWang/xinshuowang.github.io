@@ -18,5 +18,6 @@
 - [Raft](ha/2.html)
 - [CAP定理](ha/3.html)
 - [Raft实现线性一致性读](ha/4.html)
-- [Raft实现配置变更](ha/5.html)
+- [Raft实现单节点配置变更](ha/5.html)
 - [Raft的TLA+形式化验证](ha/6.html)
+- [Raft使用Joint Consensus实现多节点配置变更](ha/7.html)
