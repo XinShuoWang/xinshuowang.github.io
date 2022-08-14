@@ -17,6 +17,7 @@
 - [happens-before与synchronize-with关系](thread_level_parallelism/4.html)
 - [lock-free编程](thread_level_parallelism/5.html)
 - [mutex编程](thread_level_parallelism/6.html)
+- [std::atomic内存序](thread_level_parallelism/7.html)
 
 # 内存层级
 - [字节对齐](memory_hierarchy/1.html)
