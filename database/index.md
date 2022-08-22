@@ -21,3 +21,4 @@
 - [Raft实现单节点配置变更](ha/5.html)
 - [Raft的TLA+形式化验证](ha/6.html)
 - [Raft使用Joint Consensus实现多节点配置变更](ha/7.html)
+- [Raft中进行Leadership Transfer](ha/8.html)
