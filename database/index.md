@@ -22,3 +22,6 @@
 - [Raft的TLA+形式化验证](ha/6.html)
 - [Raft使用Joint Consensus实现多节点配置变更](ha/7.html)
 - [Raft中进行Leadership Transfer](ha/8.html)
+
+# Mit 6.824
+- [Go语言基础](mit_6_824/1.html)
