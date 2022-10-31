@@ -25,3 +25,4 @@
 
 # Mit 6.824
 - [Go语言基础](mit_6_824/1.html)
+- [Lab1 MapReduce实验总结](mit_6_824/2.html)
