@@ -4,3 +4,4 @@
 - [硬盘配置、监控、测评](4.html)
 - [SSH、SCP、Visual Studio Code跳板机连接](5.html)
 - [Git操作](6.html)
+- [Ubuntu Server开启SMB共享](7.html)
