@@ -9,6 +9,7 @@
 - [Database](database/index.html)
 - [Paper Tracking](paper/index.html)
 - [ClickHouse、Oceanbase、PostgreSQL、MySQL](db/index.html)
+- [StarRocks](sr/index.html)
 
 # 其它
 - [C/C++](language/index.html)
