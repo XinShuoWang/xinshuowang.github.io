@@ -16,3 +16,7 @@
 # 存储
 - [Clickhouse的MergeTree存储](storage/1.html)
 - [Clickhosue导入数据](storage/2.html)
+
+
+# Velox
+- [Velox中Pipeline、Task等概念解释](query/7.html)
