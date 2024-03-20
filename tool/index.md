@@ -6,3 +6,4 @@
 - [Git操作](6.html)
 - [Ubuntu Server开启SMB共享](7.html)
 - [NAS上常用docker](8.html)
+- [VS Code的clangd、C++插件的配置](9.html)
