@@ -13,6 +13,7 @@
 # 查询
 - [查询模块综述](query/1.html)
 - [各种Join的示意图](query/2.html)
+- [Window函数语法](query/3.html)
 
 # 高可用
 - [Paxos](ha/1.html)
