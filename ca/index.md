@@ -21,6 +21,7 @@
 
 # 内存层级
 - [字节对齐](memory_hierarchy/1.html)
+- [浮点数内存表示](memory_hierarchy/2.html)
 
 # 硬件知识
 - [计算机总线](hardware/1.html)
