@@ -1,0 +1,14 @@
+<section class="list-page">
+  <div class="section-heading">
+    <p class="eyebrow">Tags</p>
+    <h1>标签</h1>
+  </div>
+  <div class="tag-cloud">
+    <% site.tags.sort('name', 1).each(function(tag) { %>
+      <a href="<%- url_for(tag.path) %>">
+        <span>#<%= tag.name %></span>
+        <em><%= tag.length %></em>
+      </a>
+    <% }) %>
+  </div>
+</section>

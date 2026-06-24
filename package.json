@@ -1,0 +1,29 @@
+{
+  "name": "xinshuowang-blog",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "hexo": {
+    "version": "8.1.2"
+  },
+  "scripts": {
+    "clean": "hexo clean",
+    "dev": "hexo server --draft --debug",
+    "prepare:posts": "node tools/prepare-posts.mjs",
+    "test:posts": "node --test tools/prepare-posts.test.mjs",
+    "build": "node tools/prepare-posts.mjs && hexo generate"
+  },
+  "dependencies": {
+    "hexo": "^8.1.2",
+    "hexo-generator-archive": "^2.0.0",
+    "hexo-generator-index": "^4.0.0",
+    "hexo-generator-tag": "^2.0.0",
+    "hexo-cli": "^4.3.2",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^7.0.1",
+    "hexo-server": "^3.0.0"
+  }
+}

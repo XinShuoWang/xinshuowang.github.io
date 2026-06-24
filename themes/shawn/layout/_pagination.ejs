@@ -1,0 +1,12 @@
+<% if (page.prev || page.next) { %>
+  <nav class="pagination" aria-label="分页">
+    <% if (page.prev) { %>
+      <a href="<%- url_for(page.prev_link) %>">较新文章</a>
+    <% } else { %>
+      <span></span>
+    <% } %>
+    <% if (page.next) { %>
+      <a href="<%- url_for(page.next_link) %>">更早文章</a>
+    <% } %>
+  </nav>
+<% } %>

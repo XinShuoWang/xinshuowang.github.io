@@ -1,0 +1,102 @@
+---
+layout: post
+title: "Window函数语法"
+date: "2024-09-20 00:00:00"
+updated: "2024-09-24 00:00:00"
+permalink: "database/query/3/"
+tags:
+  - "Database"
+  - "查询"
+---
+# WindowFunction
+## SparkSQL中Window语法
+参考链接：[SparkSQL中Window语法](https://spark.apache.org/docs/latest/sql-ref-syntax-qry-select-window.html)
+
+<img width="918" alt="image" src="https://github.com/user-attachments/assets/97d0f49b-0958-433e-b6bc-dbba92d89646">
+<img width="971" alt="image" src="https://github.com/user-attachments/assets/66c1a242-9fcd-418d-9312-e799a9155d2b">
+
+## window_frame中RANGE VS ROWS对比
+```
+id	period	shop	revenue
+1	2021/04	Shop 2	341,227.53
+2	2021/05	Shop 2	315,447.24
+3	2021/06	Shop 1	1,845,662.35
+4	2021/04	Shop 2	21,487.63
+5	2021/05	Shop 1	1,489,774.16
+6	2021/06	Shop 1	52,489.35
+7	2021/04	Shop 1	154,552.82
+8	2021/05	Shop 2	6,548.49
+9	2021/06	Shop 2	387,779.49
+```
+
+### ROWS参数结果
+```
+SELECT
+  period,
+  shop,
+  revenue,
+  SUM(revenue) OVER(
+    PARTITION BY shop
+    ORDER BY period ASC
+    ROWS UNBOUNDED PRECEDING
+  ) AS rows_cumulative_revenue
+FROM revenue_consolidation;
+```
+
+![rows-ezgif com-optimize (1)](https://github.com/user-attachments/assets/648dfde0-4a01-4ee4-bcf7-d8cd464b19a8)
+
+
+
+### RANGE参数结果
+```
+SELECT
+  period,
+  shop,
+  revenue,
+  SUM(revenue) OVER(
+    PARTITION BY shop
+    ORDER BY period ASC
+    RANGE UNBOUNDED PRECEDING
+  ) AS range_cumulative_revenue
+FROM revenue_consolidation;
+```
+![range-ezgif com-optimize](https://github.com/user-attachments/assets/c4499042-846b-443e-b6e1-8f9c6102d694)
+
+
+
+## ROWS模式和RANGE模式解释
+### ROWS mode
+
+`ROWS` 模式可以解释为行在窗口分区中出现的顺序的索引。此顺序由 `ORDER BY` 子句决定。在 `ROWS` 模式下，`CURRENT ROW` 指的是函数正在被计算的当前行。每个连续行的帧号都在增加。帧号从 0 开始，每行增加 1。
+
+```
+ROWS BETWEEEN 2 PRECEDING AND 2 FOLLOWING
+
+row_index    partition_col        order_by_col        frame_start         frame_end
+     0            1                     1                   0                 2
+     1            1                     2                   0                 3
+     2            1                     2                   0                 4
+     3            1                     3                   1                 5
+     4            1                     4                   2                 6
+     5            1                     4                   3                 7
+     6            1                     4                   4                 7
+     7            1                     5                   5                 7
+```
+
+### RANGE mode
+
+在 `RANGE` 模式下，所有PeerRows都具有相同的框架编号。如果行的 `ORDER BY` 字段值相同，则这些行是PeerRows。`CURRENT ROW` 的帧起始指的是当前行的第一个对等行，而 `CURRENT ROW` 的帧结束指的是当前行的最后一个对PeerRows。如果未指定 `ORDER BY`，则所有行都被视为当前行的对等行。
+
+```
+RANGE BETWEEEN 2 PRECEDING AND 2 FOLLOWING
+
+row_index    partition_col        order_by_col        frame_start         frame_end
+     0            1                     1                   0                 3
+     1            1                     2                   0                 6
+     2            1                     2                   0                 6
+     3            1                     3                   0                 7
+     4            1                     4                   1                 7
+     5            1                     4                   1                 7
+     6            1                     4                   1                 7
+     7            1                     5                   3                 7
+```

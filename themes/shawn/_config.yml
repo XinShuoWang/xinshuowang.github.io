@@ -1,0 +1,33 @@
+profile:
+  display_name: Shawn
+  english_name: Shawn
+  role: Big Data Infrastructure Engineer
+  location: Shanghai, China
+  intro: 目前在上海从事大数据基础设施与查询引擎优化工作，关注 SparkSQL / SQL 引擎优化、内存管理、查询执行、分布式系统性能工程，以及 C++、Python、Linux 下的生产问题定位。
+  timeline:
+    - period: Jan 2023 - Present
+      title: ByteDance Data Engine · Data Engine Engineer
+      detail: 参与 Spark-on-Bolt / SparkSQL 引擎优化，项目覆盖 80%+ CN SparkSQL 资源，相比 vanilla Spark 获得 1.5-1.6x 加速。
+    - period: May 2022 - Jul 2022
+      title: NetEase Data Science Center · Big Data Engine Intern
+      detail: 参与 Impala 分布式 SQL 引擎开发和优化，关注执行效率、稳定性、性能分析、调试与查询引擎组件验证。
+    - period: Sep 2020 - Mar 2023
+      title: East China Normal University · Master of Big Data Technology and Engineering
+      detail: 研究生阶段聚焦数据库执行引擎技术，沉淀分布式系统、操作系统和性能工程相关能力。
+    - period: Sep 2016 - Jun 2020
+      title: Jiangsu University of Science and Technology · Bachelor of Software Engineering
+      detail: 本科阶段学习软件工程基础，建立 C/C++、工程实践和计算机系统方向的知识底座。
+
+nav:
+  - label: 文章
+    path: /
+  - label: 标签
+    path: /tags/
+  - label: 归档
+    path: /archives/
+
+links:
+  - label: X / Twitter
+    href: https://x.com/Bob04169625
+  - label: Email
+    href: mailto:xinshuowang@yeah.net

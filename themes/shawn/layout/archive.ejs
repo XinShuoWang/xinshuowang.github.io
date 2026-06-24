@@ -1,0 +1,15 @@
+<section class="list-page">
+  <div class="section-heading">
+    <p class="eyebrow">Archives</p>
+    <h1>文章归档</h1>
+  </div>
+  <div class="archive-list">
+    <% page.posts.each(function(post) { %>
+      <article class="archive-row">
+        <time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+        <a href="<%- url_for(post.path) %>"><%= post.title %></a>
+      </article>
+    <% }) %>
+  </div>
+  <%- partial('_pagination') %>
+</section>

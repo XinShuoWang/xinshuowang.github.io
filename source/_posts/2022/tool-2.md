@@ -1,0 +1,32 @@
+---
+layout: post
+title: "Perf工具"
+date: "2022-08-11 00:00:00"
+updated: "2023-02-06 00:00:00"
+permalink: "tool/2/"
+tags:
+  - "Common Tool"
+---
+# Perf安装
+```
+# 先拿到Kernel版本
+uname -r
+
+# 下载源码
+https://mirrors.edge.kernel.org/pub/linux/kernel/
+
+# 参考下面tutorial编译和安装依赖
+https://scicoding.com/how-to-compile-perf-with-all-features-on/
+
+# 安装
+PYTHON=python2 make prefix=$(realpath ~/bin/test) install
+
+```
+
+# 热力图分析
+1. `sudo perf record -e cpu-clock -g -p 28591`
+2. `sudo perf script -i perf.data &> perf.unfold`
+3. `git clone https://github.com/brendangregg/FlameGraph.git`
+4. `cp perf.unfold ./FlameGraph/ && cd FlameGraph`
+5. `./stackcollapse-perf.pl perf.unfold &> perf.folded`
+6. `./flamegraph.pl perf.folded > perf.svg`

@@ -1,0 +1,22 @@
+---
+layout: post
+title: "各种Join的示意图"
+date: "2024-08-13 00:00:00"
+updated: "2024-08-29 00:00:00"
+permalink: "database/query/2/"
+tags:
+  - "Database"
+  - "查询"
+---
+# Common Join
+![1_jAt5tID0Kc9B-8AGbeBivw](https://github.com/user-attachments/assets/e867fd5f-2593-4bf0-a1b1-9817d45c4b5b)
+![join-kinds](https://github.com/user-attachments/assets/819b7bdb-6375-44cc-9de1-a76bdc5481bb)
+
+# Semi-Join and Anti-Join
+- Anti-Join: 从第一个表中取出在第二个表中JoinKey不匹配的行。
+  - Retrieves rows from the first table that do not have any matching rows in the second table.
+  - 对应的SQL语法是：`select <select list> from A left join B where A.key = B.key and B.key is NULL`，在上图中有对应
+- Semi-Join: 从第一个表中取出在第二个表中JoinKey匹配次数大于或等于1的行。
+  - Retrieves rows from the first table that have at least one matching row in the second table
+  - 对应的SQL语法是：`select <select list> from A where A.key in (select B.key from B)`，在上图中没有对应。
+  - 逻辑上可以这样理解：把INNER JOIN的结果去除掉左表出现多次的行即可

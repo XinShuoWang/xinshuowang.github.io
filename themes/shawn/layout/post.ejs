@@ -1,0 +1,22 @@
+<article class="article-page">
+  <header class="article-header">
+    <a class="back-link" href="<%- url_for('/') %>">返回文章列表</a>
+    <h1><%= page.title %></h1>
+    <div class="article-meta">
+      <time datetime="<%= date_xml(page.date) %>">发布于 <%= date(page.date, 'YYYY-MM-DD') %></time>
+      <% if (page.updated) { %>
+        <span>更新于 <%= date(page.updated, 'YYYY-MM-DD') %></span>
+      <% } %>
+    </div>
+    <% if (page.tags && page.tags.length) { %>
+      <div class="tag-list">
+        <% page.tags.each(function(tag) { %>
+          <a href="<%- url_for(tag.path) %>">#<%= tag.name %></a>
+        <% }) %>
+      </div>
+    <% } %>
+  </header>
+  <div class="article-content">
+    <%- page.content %>
+  </div>
+</article>

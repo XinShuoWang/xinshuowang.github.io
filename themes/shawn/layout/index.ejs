@@ -1,0 +1,54 @@
+<section class="home-grid">
+  <% const displayName = theme.profile.display_name || theme.profile.english_name || theme.profile.name || config.author; %>
+  <aside class="profile-panel" aria-label="个人介绍">
+    <p class="eyebrow"><%= theme.profile.role %></p>
+    <h1><%= displayName %></h1>
+    <p class="profile-panel__intro"><%= theme.profile.intro %></p>
+    <div class="contact-links">
+      <% theme.links.forEach(function(link) { %>
+        <% const isExternal = /^https?:/.test(link.href); %>
+        <a href="<%- link.href %>"<% if (isExternal) { %> target="_blank" rel="me noopener"<% } %>><%= link.label %></a>
+      <% }) %>
+    </div>
+    <div class="timeline">
+      <% theme.profile.timeline.forEach(function(item) { %>
+        <div class="timeline__item">
+          <span><%= item.period %></span>
+          <strong><%= item.title %></strong>
+          <p><%= item.detail %></p>
+        </div>
+      <% }) %>
+    </div>
+  </aside>
+
+  <section class="post-feed" aria-label="文章列表">
+    <div class="section-heading">
+      <p class="eyebrow">Articles</p>
+      <h2>最新文章</h2>
+    </div>
+    <% page.posts.each(function(post) { %>
+      <article class="post-card">
+        <div class="post-card__meta">
+          <time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+          <% if (post.tags && post.tags.length) { %>
+            <span>·</span>
+            <span><%= post.tags.length %> tags</span>
+          <% } %>
+        </div>
+        <h3><a href="<%- url_for(post.path) %>"><%= post.title %></a></h3>
+        <% const summary = strip_html(post.excerpt || post.content).replace(/\s+/g, ' ').trim(); %>
+        <% if (summary) { %>
+          <p><%= truncate(summary, { length: 140 }) %></p>
+        <% } %>
+        <% if (post.tags && post.tags.length) { %>
+          <div class="tag-list">
+            <% post.tags.each(function(tag) { %>
+              <a href="<%- url_for(tag.path) %>">#<%= tag.name %></a>
+            <% }) %>
+          </div>
+        <% } %>
+      </article>
+    <% }) %>
+    <%- partial('_pagination') %>
+  </section>
+</section>

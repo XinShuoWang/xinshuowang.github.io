@@ -1,0 +1,40 @@
+<!doctype html>
+<% const displayName = theme.profile.display_name || theme.profile.english_name || theme.profile.name || config.author; %>
+<% const browserTitle = page.layout === 'post' && page.title ? page.title : config.title; %>
+<html lang="<%= config.language || 'zh-CN' %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= browserTitle %></title>
+    <meta name="description" content="<%= config.description %>">
+    <link rel="icon" href="<%- url_for('/favicon.svg') %>" type="image/svg+xml">
+    <link rel="alternate icon" href="<%- url_for('/favicon.ico') %>">
+    <link rel="stylesheet" href="<%- url_for('/css/main.css') %>">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-shell site-header__inner">
+        <a class="brand" href="<%- url_for('/') %>" aria-label="<%= config.title %>">
+          <span class="brand__mark">S</span>
+          <span>
+            <strong><%= displayName %></strong>
+            <small><%= theme.profile.role %></small>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="主导航">
+          <% theme.nav.forEach(function(item) { %>
+            <a href="<%- url_for(item.path) %>"><%= item.label %></a>
+          <% }) %>
+        </nav>
+      </div>
+    </header>
+    <main class="site-shell">
+      <%- body %>
+    </main>
+    <footer class="site-footer">
+      <div class="site-shell">
+        <span>© <%= new Date().getFullYear() %> <%= displayName %></span>
+      </div>
+    </footer>
+  </body>
+</html>

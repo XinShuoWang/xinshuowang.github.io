@@ -1,0 +1,24 @@
+<section class="list-page">
+  <div class="section-heading">
+    <p class="eyebrow">Tag</p>
+    <h1>#<%= page.tag %></h1>
+  </div>
+  <div class="post-feed post-feed--wide">
+    <% page.posts.each(function(post) { %>
+      <article class="post-card">
+        <div class="post-card__meta">
+          <time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+        </div>
+        <h2><a href="<%- url_for(post.path) %>"><%= post.title %></a></h2>
+        <% if (post.tags && post.tags.length) { %>
+          <div class="tag-list">
+            <% post.tags.each(function(tag) { %>
+              <a href="<%- url_for(tag.path) %>">#<%= tag.name %></a>
+            <% }) %>
+          </div>
+        <% } %>
+      </article>
+    <% }) %>
+  </div>
+  <%- partial('_pagination') %>
+</section>

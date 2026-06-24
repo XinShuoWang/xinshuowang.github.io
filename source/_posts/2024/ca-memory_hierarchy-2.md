@@ -1,0 +1,48 @@
+---
+layout: post
+title: "浮点数内存表示"
+date: "2024-10-09 00:00:00"
+updated: "2025-02-08 00:00:00"
+permalink: "ca/memory_hierarchy/2/"
+tags:
+  - "Computer Architecture"
+  - "内存层级"
+---
+# 浮点数的内存表示
+
+- 整数的内存表示规则是这样的：` a * 2^0 + b * 2^1 + c * 2^2 + ...`，a、b、c、...只可以是0或1
+- 浮点数的整数部分参考上面的整数表示规则，小数部分参考类似的表示规则：` a * 2^-1 + b * 2^-2 + c * 2^-3 + ...`，a、b、c、...只可以是0或1
+
+# double VS float
+![image](https://github.com/user-attachments/assets/3806127f-fa4e-4ddf-88ae-a538084bea3e)
+
+
+# 为什么0.1+0.2=0.30000000000000004？
+- 0.1的二进制表示是这样的：0.0001100… （重复1100）
+![image](https://github.com/user-attachments/assets/fa29b298-97d2-49c4-b212-2662ebf6cca9)
+
+- 0.2的内存表示是这样的：`0(符号位) 01111100（指数部分） 10011001100110011001101（小数部分）`
+![img_v3_02fg_23fdca04-c4e9-4520-a152-01141511864g](https://github.com/user-attachments/assets/97f0f942-b4d6-45a2-8dd9-f3ec98efd2f0)
+
+- 最终结果
+![image](https://github.com/user-attachments/assets/10b80600-c410-41de-8a8f-da2b2ee1480a)
+
+
+# IEEE-754标准
+IEEE-754标准把浮点数分为了3类：规范化浮点数、非规范化浮点数和特殊值
+![image](https://github.com/user-attachments/assets/92160f60-6fdc-449d-b611-62181ed83ac7)
+
+## 规范化浮点数
+规范化浮点数的指数部分不全为0也不全为1，尾数（mantissa）总是以“1.”开头。这种形式使得浮点数能够充分利用可用的位数。
+
+## 非规范化浮点数
+非规范化浮点数的指数部分全为0，此时尾数不以“1.xxx”为默认开头，而是默认以“0.xxx”为开头，用于表示接近于零的非常小的数字。
+
+## 特殊值
+特殊值有3个，+Infinity、-Infinity、Nan，这三个特殊值的共同之处是指数为全为1，+Infinity和-Infinity的尾数部分全为0，区别只在符号位：+Infinity的符号位为0，-Infinity的符号位为1。Nan的表示比较特殊，只要求尾数部分**不全为0**即可表示Nan
+
+# 常用工具网站
+https://baseconvert.com/ieee-754-floating-point
+
+# 参考链接
+https://web.archive.org/web/20240517161519/https://polarisxu.studygolang.com/posts/basic/diagram-float-point/

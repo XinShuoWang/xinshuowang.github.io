@@ -1,0 +1,50 @@
+---
+layout: post
+title: "模板元编程"
+date: "2022-08-11 00:00:00"
+updated: "2022-08-11 00:00:00"
+permalink: "language/cpp/7/"
+tags:
+  - "C/C++"
+  - "C++基础"
+---
+```
+#include "timer.h"
+
+#include <bits/stdc++.h>
+
+int fib(int x){
+    if(x == 1 || x == 2) return 1;
+    return fib(x - 1) + fib(x - 2);
+}
+
+template<int N, typename T = int>
+struct fibonacci {
+    static constexpr T value = fibonacci<N-1,T>::value + fibonacci<N-2,T>::value;
+};
+
+template<typename T>
+struct fibonacci<1,T> {
+    static constexpr T value = 1;
+};
+
+template<typename T>
+struct fibonacci<0,T> {
+    static constexpr T value = 0;
+};
+
+
+int main()
+{
+    {
+        Timer timer;
+        std::cout << fib(45) << std::endl;
+    }
+    {
+        Timer timer;
+        std::cout << fibonacci<45, unsigned long int>::value << std::endl;
+    }
+    return 0;
+}
+
+```

@@ -1,0 +1,21 @@
+---
+layout: post
+title: "docker下安装ClickHouse"
+date: "2022-08-11 00:00:00"
+updated: "2022-08-27 00:00:00"
+permalink: "db/build/1/"
+tags:
+  - "Database"
+  - "编译安装"
+---
+这篇文章主要是为了记录ClickHouse的安装过程
+
+# 下载ClickHouse
+```
+git clone --recursive --branch sub_filter https://github.com/XinShuoWang/ClickHouse.git
+```
+
+# 编译安装ClickHouse
+```
+cmake .. -DCMAKE_C_COMPILER=/home/ubuntu/gcc/bin/gcc -DCMAKE_CXX_COMPILER=/home/ubuntu/gcc/bin/g++ -DCMAKE_BUILD_TYPE=Debug
+```

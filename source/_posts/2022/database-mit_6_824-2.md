@@ -1,0 +1,60 @@
+---
+layout: post
+title: "Lab1 MapReduce实验总结"
+date: "2022-10-31 00:00:00"
+updated: "2022-11-01 00:00:00"
+permalink: "database/mit_6_824/2/"
+tags:
+  - "Database"
+  - "Mit 6.824"
+---
+# 实验踩坑
+1. 在Go的struct里面，只有变量首字母大写，状态才能为`exported`，只有状态为`exported`才能为RPC所用
+2. 在Go的`i, value := range []string{}`语法里面，value是slice里面对象的深拷贝，直接修改value是没用的
+3. 在Go里面`defer`只会在函数执行完成才会执行，并不会在出了某个作用域就执行
+4. 在Go里面可以通过设置`log.SetFlags(log.Lshortfile)`在打印日志的时候顺便打印文件名
+5. 在Go里面`sync.Mutex`是不可重入的
+6. 如果修改了`func coordinatorSock() string`函数里面的"/tmp/824-mr-"值，还需要在测试脚本里面一起修改
+
+
+
+# 实验要求
+## 介绍
+在本实验中，您将构建一个MapReduce系统。您将实现一个调用Map和Reduce函数并处理读取和写入文件的Worker进程，以及一个将任务分发给Worker并处理Worker宕机情形的Coordinator进程。
+您将构建类似于MapReduce论文的东西。（注意：本实验室使用“Coordinator”而不是论文的“Master”。）
+
+## 让我们开始！
+首先需要配置Golang的运行时环境，还需要配置Git，下面的操作是clone代码的操作：
+```
+$ git clone git://g.csail.mit.edu/6.824-golabs-2022 6.824
+$ cd 6.824
+$ ls
+Makefile src
+$
+```
+
+我们在`src/main/mrsequential.go`中为您提供了一个简单的SequentialMapReduce实现。它在一个进程中运行Map和Reduce操作各一次。
+我们还为您提供了几个 MapReduce 应用程序：用于WordCount操作的`mrapps/wc.go`程序，用于文本索引的`mrapps/indexer.go`程序。
+您可以按如下顺序运行程序来执行WordCount操作：
+```
+$ cd ~/6.824
+$ cd src/main
+$ go build -race -buildmode=plugin ../mrapps/wc.go
+$ rm mr-out*
+$ go run -race mrsequential.go wc.so pg*.txt
+$ more mr-out-0
+A 509
+ABOUT 2
+ACT 8
+...
+```
+
+注意：-race启用了Go语言自带的race检查器。我们强烈建议您使用race检查器来开发和测试您的6.824实验代码。
+当我们对您的实验代码进行评分时，我们不会使用race检查器。使用race检查器
+
+
+## 你的任务
+
+## 一些规定
+
+## 提示
